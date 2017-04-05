@@ -1,0 +1,50 @@
+CREATE TABLE IF NOT EXISTS Users (
+  id SERIAL PRIMARY KEY,
+  avatar_id SMALLINT REFERENCES Avatars(id),
+  encrypted_password VARCHAR(256) NOT NULL,
+  email VARCHAR(100) UNIQUE NOT NULL,
+  amount INTEGER DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS Games (
+  id SERIAL PRIMARY KEY,
+  seat_count SMALLINT DEFAULT 0,
+  seat_turn SMALLINT,
+  direction SMALLINT,
+  card_pile VARCHAR ARRAY,
+  next_card SMALLINT,
+  discard_pile VARCHAR ARRAY, 
+  top_discard VARCHAR(3),
+  joinable BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE IF NOT EXISTS Messages (
+  id SERIAL PRIMARY KEY,
+  game_id INTEGER REFERENCES Games(id) ON DELETE CASCADE,
+  user_id INTEGER REFERENCES Users(id),
+  post_time TIME WITH TIME ZONE,
+  message VARCHAR(500)
+);
+
+CREATE TABLE IF NOT EXISTS Cards (
+  card_id VARCHAR(3) PRIMARY KEY,
+  image_url VARCHAR(500),
+  point INTEGER NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Players (
+  game_id INTEGER REFERENCES Games(id) ON DELETE CASCADE,
+  user_id INTEGER REFERENCES Users(id),
+  seat_number SMALLINT NOT NULL,
+  hand_cards VARCHAR ARRAY,
+  card_count SMALLINT DEFAULT 0,
+  say_uno BOOLEAN DEFAULT FALSE,
+  announce_suit VARCHAR(1) DEFAULT NULL,
+  score INTEGER DEFAULT 0,
+  PRIMARY KEY (game_id, user_id)
+);
+
+CREATE TABLE IF NOT EXISTS Avatars (
+  id SERIAL PRIMARY KEY,
+  image_url VARCHAR(500)
+);
