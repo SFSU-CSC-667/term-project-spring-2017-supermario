@@ -1,3 +1,23 @@
+/*
+ * When Postgresql server is installed and a database uno is created,
+ * to create the following tables and insert some data, in a terminal
+ * run the command: 
+ *   psql uno < uno.sql
+ */
+
+CREATE TABLE IF NOT EXISTS Avatars (
+  id SERIAL PRIMARY KEY,
+  image_url VARCHAR(128)
+);
+
+CREATE TABLE IF NOT EXISTS Cards (
+  id INTEGER PRIMARY KEY,
+  image_url VARCHAR(128),
+  point INTEGER NOT NULL,
+  color VARCHAR(1),
+  number_symbol SMALLINT
+);
+
 CREATE TABLE IF NOT EXISTS Users (
   id SERIAL PRIMARY KEY,
   avatar_id SMALLINT REFERENCES Avatars(id),
@@ -25,14 +45,6 @@ CREATE TABLE IF NOT EXISTS Messages (
   message VARCHAR(500)
 );
 
-CREATE TABLE IF NOT EXISTS Cards (
-  id INTEGER PRIMARY KEY,
-  image_url VARCHAR(128),
-  point INTEGER NOT NULL,
-  color VARCHAR(1),
-  number_symbol SMALLINT
-);
-
 CREATE TABLE IF NOT EXISTS Game_Cards (
   game_id INTEGER REFERENCES Games(id),
   card_id INTEGER REFERENCES Cards(id),
@@ -50,11 +62,6 @@ CREATE TABLE IF NOT EXISTS Players (
   announce_suit VARCHAR(1) DEFAULT NULL,
   score INTEGER DEFAULT 0,
   PRIMARY KEY (game_id, user_id)
-);
-
-CREATE TABLE IF NOT EXISTS Avatars (
-  id SERIAL PRIMARY KEY,
-  image_url VARCHAR(128)
 );
 
 INSERT INTO Cards (id, image_url, point, color, number_symbol) VALUES
