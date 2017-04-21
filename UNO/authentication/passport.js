@@ -4,15 +4,10 @@ var LocalStrategy = require( 'passport-local' ).Strategy;
 
 // Test users
 var users = {
-  zack: {
-    username: 'zack',
-    password: '1234',
+  test: {
+    username: 'test',
+    password: 'test',
     id: 1,
-  },
-  node: {
-    username: 'node',
-    password: '5678',
-    id: 2,
   },
 }
 
