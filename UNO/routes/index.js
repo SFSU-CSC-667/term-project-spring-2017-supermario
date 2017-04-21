@@ -28,9 +28,9 @@ router.get('/login', function(req, res, next) {
 
 router.get('/lobby', function(req, res, next) { // This function is called when receive request " GET /lobby " 
 	if (req.isAuthenticated()){
-	res.render('lobby', { title: 'Authenticated', username: req.user.username });
+	res.render('lobby', { auth_stat: 'Authenticated', username: req.user.username });
 	} else {
-	res.render('lobby', { title: 'Unauthenticated', username: req.user.username });
+	res.render('lobby', { auth_stat: 'Unauthenticated'});
 	}
     
 });
