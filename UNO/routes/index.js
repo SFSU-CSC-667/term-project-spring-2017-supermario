@@ -2,32 +2,34 @@
 var express = require( 'express' );
 var router=express.Router();
 const passport = require('../authentication/passport')
-//const pgp = require( 'pg-promise' );
-
-//db=pgp.connect()
+const pgp = require( 'pg-promise' )({
+});
+connection = "postgres://localhost:5432/UNO"
+db=pgp(connection);
 
 router.get('/', function(req, res, next) { // This function is called when receive request " GET / " 
       
   if(req.isAuthenticated()){   // If the request contains session of user information
-       res.render('lobby', {title: 'Authenticated', username: req.user.username}); // Will display a page from index.pug, assign title="Express"
+       res.render('lobby', {title: 'Authenticated', email: req.user.email}); // Will display a page from index.pug, assign title="Express"
   } else {
        res.render('index', { title: 'Express'}); // Will display a page from index.pug, assign title="Express"
   }
 });
 
 
-/*
+
 router.post('/signup', (req, res, next) => {
 	
-    db.none('INSERT INTO users(email, password, nick_name) VALUES(${email}, ${password}, ${nick_name})', user)
+    db.none('INSERT INTO users(email, password, nick_name) VALUES(${email}, ${password}, ${nick_name})', req.body)
     .then(() => {
-		res.render('lobby', {title: 'Authenticated', username: user.nickname});
+		res.render('lobby', {title: 'Authenticated'});
     })
     .catch(error => {
         // error; 
+ 		 res.render('error');
     });
 });
-*/
+
 
 router.get('/signup', function(req, res, next) {
 	res.render('signup_form', { title: 'Sign Up' });
@@ -50,7 +52,7 @@ router.get('/login', function(req, res, next) {
 
 router.get('/lobby', function(req, res, next) { // This function is called when receive request " GET /lobby " 
 	if (req.isAuthenticated()){
-	res.render('lobby', { auth_stat: 'Authenticated', username: req.user.username });
+	res.render('lobby', { auth_stat: 'Authenticated', email: req.user.email });
 	} else {
 	res.render('lobby', { auth_stat: 'Unauthenticated'});
 	}

@@ -5,7 +5,7 @@ var LocalStrategy = require( 'passport-local' ).Strategy;
 // Test users
 var users = {
   test: {
-    username: 'test',
+    email: 'test',
     password: 'test',
     id: 1,
   },
@@ -20,7 +20,7 @@ passport.deserializeUser(function(user, done) {
 });
 
 var localStrategy = new LocalStrategy({
-      usernameField: 'username',
+      usernameField: 'email',
       passwordField: 'password',
     },
     function(username, password, done) {
