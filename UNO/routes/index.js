@@ -20,13 +20,13 @@ router.get('/', function(req, res, next) { // This function is called when recei
 
 router.post('/signup', (req, res, next) => {
 	
-    db.none('INSERT INTO users(email, password, nick_name) VALUES(${email}, ${password}, ${nick_name})', req.body)
+    db.none('INSERT INTO users(email, encrypted_password, nick_name) VALUES($1, $2, $3)', [req.body.email, req.body.password, req.body.nick_name])
     .then(() => {
-		res.render('lobby', {title: 'Authenticated'});
+		res.render('lobby', {auth_stat: 'Authenticated', email: req.body.email});
     })
     .catch(error => {
         // error; 
- 		 res.render('error');
+ 		 console.log(error);
     });
 });
 
