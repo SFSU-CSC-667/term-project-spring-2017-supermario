@@ -1,4 +1,3 @@
-
 var express = require( 'express' );
 var router=express.Router();
 const passport = require('../authentication/passport')
@@ -12,7 +11,7 @@ router.get('/', function(req, res, next) { // This function is called when recei
   if(req.isAuthenticated()){   // If the request contains session of user information
        res.render('lobby', {title: 'Authenticated', email: req.user.email}); // Will display a page from index.pug, assign title="Express"
   } else {
-       res.render('index', { title: 'Express'}); // Will display a page from index.pug, assign title="Express"
+       res.render('index', { title: 'UNO'}); // Will display a page from index.pug, assign title="Express"
   }
 });
 
