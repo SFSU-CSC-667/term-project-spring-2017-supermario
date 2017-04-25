@@ -1,10 +1,7 @@
 var express = require( 'express' );
 var router=express.Router();
 const passport = require('../authentication/passport')
-const pgp = require( 'pg-promise' )({
-});
-connection = "postgres://localhost:5432/UNO"
-db=pgp(connection);
+db=require('../database/db')
 
 router.get('/', function(req, res, next) { // This function is called when receive request " GET / " 
       

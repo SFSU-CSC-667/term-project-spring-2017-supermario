@@ -1,10 +1,7 @@
 // This initializes and implements passport methods
 var passport = require( 'passport' );
 var LocalStrategy = require( 'passport-local' ).Strategy;
-const pgp = require( 'pg-promise' )({
-});
-connection = "postgres://localhost:5432/UNO"
-db=pgp(connection);
+db=require('../database/db');
 
 // Test users
 var users = {
