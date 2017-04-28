@@ -18,7 +18,7 @@ router.get('/', function(req, res, next) { // This function is called when recei
 
 
 router.post('/signup', (req, res, next) => {
-	
+    db.none('SELECT * FROM users where email like $1 ', req.body.email).then( user => {
     bcrypt.hash(req.body.password, saltRounds).then( (hash) => {
     db.none('INSERT INTO users(email, encrypted_password, nick_name) VALUES($1, $2, $3)', [req.body.email, hash, req.body.nick_name])
     .then(() => {
@@ -28,6 +28,11 @@ router.post('/signup', (req, res, next) => {
         // error; 
  		 console.log(error);
     });
+    
+    });
+	}).catch(error => {
+        // any user has same email is found in database
+		res.render('signup_form', { msg: 'email is already used'});
     });
 });
 
