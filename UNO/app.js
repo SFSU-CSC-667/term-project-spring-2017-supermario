@@ -7,7 +7,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var flash = require('connect-flash');
 const passport = require('passport')
-
+const consolidate = require('consolidate')
 var index = require('./routes/index');
 var users = require('./routes/users');
 var game = require('./routes/game');
@@ -17,7 +17,8 @@ app.use(flash());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+app.engine("html", consolidate.handlebars);
+app.set("view engine", "html");
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
