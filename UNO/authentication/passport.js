@@ -2,15 +2,7 @@
 var passport = require( 'passport' );
 var LocalStrategy = require( 'passport-local' ).Strategy;
 db=require('../database/db');
-
-// Test users
-var users = {
-  test: {
-    email: 'test',
-    password: 'test',
-    id: 1,
-  },
-}
+var bcrypt = require('bcrypt');
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -30,17 +22,18 @@ var localStrategy = new LocalStrategy({
        user => {
 	  console.log(username)
       console.log(user)
-      /*if ( user == null ) {
+      if ( user == null ) {
         return done( null, false, { message: 'Invalid user' } );
       };
+      bcrypt.compare(password, user.encrypted_password).then( (res) => {
+    // res == true 
+		if (res == false) {
+        	return done( null, false, { message: 'Invalid password' } );
+        }
+        done( null, user );
+      });
 
-      if ( user.encrypted_password !== password ) {
-        return done( null, false, { message: 'Invalid password' } );
-      };*/
-
-      done( null, user );
-      })
-       .catch(error => {
+      }).catch(error => {
         // error; 
  		 console.log(error);
       });

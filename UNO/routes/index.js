@@ -2,27 +2,37 @@ var express = require( 'express' );
 var router=express.Router();
 const passport = require('../authentication/passport')
 db=require('../database/db')
+var bcrypt = require('bcrypt');
+const saltRounds = 10;
+
 
 router.get('/', function(req, res, next) { // This function is called when receive request " GET / " 
       
   if(req.isAuthenticated()){   // If the request contains session of user information
-       res.render('lobby', {title: 'Authenticated', email: req.user.email}); // Will display a page from index.pug, assign title="Express"
+       res.render('lobby', {auth_stat: 'Authenticated', email: req.user.email}); 
   } else {
-       res.render('index', { title: 'UNO'}); // Will display a page from index.pug, assign title="Express"
+       res.render('index', { title: 'UNO'});
   }
 });
 
 
 
 router.post('/signup', (req, res, next) => {
-	
-    db.none('INSERT INTO users(email, encrypted_password, nick_name) VALUES($1, $2, $3)', [req.body.email, req.body.password, req.body.nick_name])
+    db.none('SELECT * FROM users where email like $1 ', req.body.email).then( user => {
+    bcrypt.hash(req.body.password, saltRounds).then( (hash) => {
+    db.none('INSERT INTO users(email, encrypted_password, nick_name) VALUES($1, $2, $3)', [req.body.email, hash, req.body.nick_name])
     .then(() => {
 		res.render('lobby', {auth_stat: 'Authenticated', email: req.body.email});
     })
     .catch(error => {
         // error; 
  		 console.log(error);
+    });
+    
+    });
+	}).catch(error => {
+        // any user has same email is found in database
+		res.render('signup_form', { msg: 'email is already used'});
     });
 });
 
@@ -43,7 +53,12 @@ router.post(
 
 
 router.get('/login', function(req, res, next) {
+	
+	if (req.isAuthenticated()){
+	res.render('lobby', { auth_stat: 'Authenticated', email: req.user.email });
+	} else {
 	res.render('login_form', { title: 'Login' });
+	}
 });
 
 router.get('/lobby', function(req, res, next) { // This function is called when receive request " GET /lobby " 
