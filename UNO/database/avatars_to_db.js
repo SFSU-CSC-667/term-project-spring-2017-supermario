@@ -11,12 +11,7 @@
  */
 
 const fs = require('fs');
-const pgp = require('pg-promise')();
-/* adjust the follow line value to your system:
- * "postgres://YourUserName:YourPassword@localhost:port/YourDatabase";
- */ 
-const connectString = 'postgres://postgres:postgres@localhost:5432/uno';
-const db = pgp(connectString);
+const db = require('./db');
 
 const avatarsPath = __dirname+'/../images/avatars';
 const files = fs.readdirSync(avatarsPath);
@@ -39,5 +34,3 @@ files.forEach(function(f) {
             console.log('Access db error');   
         });
 });
-
-pgp.end();

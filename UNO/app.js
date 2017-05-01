@@ -11,6 +11,7 @@ const consolidate = require('consolidate')
 var index = require('./routes/index');
 var users = require('./routes/users');
 var game = require('./routes/game');
+const test_game = require('./routes/test-game');
 
 var app = express();
 app.use(flash());
@@ -38,6 +39,7 @@ app.use(passport.session());
 app.use('/', index);
 app.use('/users', users);
 app.use('/game', game);
+app.use('/test-game', test_game);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
