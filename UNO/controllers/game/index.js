@@ -12,10 +12,14 @@ const game = (app, server) => {
           console.log('game client disconnected');
       });
 
-      socket.on('chat message', function(msg){
+      socket.on('chat message', function(msg) {
         socket.emit('chat message', msg);
       });
-  })
+
+      socket.on('game', function(msg) {
+        socket.emit('game', 'Echo from game server:' + msg);
+      });
+  });
 }
 
 module.exports = { game };

@@ -1,0 +1,39 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Test Game</title>
+
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/js/test-game.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/test-game.css">
+
+  </head>
+  <body>
+    <h2>Test Game</h2>
+    <div id="gameBorad">
+      <div id="board">
+        <h3>Data to send to server</h3>
+        <p id="tosend"></p>
+        <h3>Feedback from server</h3>
+        <p id="feedback"></p>
+        <br>
+        <img id="card1" class="card" src='images/cards/r1.png' name='card' value='1' onclick="action('card1')"
+             alt='card:red 1'>
+        <img id="draw" class="card" src='images/cards/back.png' name='card' value='back' onclick="action('draw')"
+             alt='card:back'>
+        <br><p id="uno" onclick="action('uno')">Click to Say UNO</p>
+        <br><p id="skip" onclick="action('skip')">Click to Skip</p> 
+      </div>
+    </div>
+
+    <div id="chatRoom">
+
+      <ul id="messages"></ul>
+      <form action="">
+        <input id="m" autocomplete="off" /><button>Send</button>
+      </form>
+    </div>
+
+  </body>
+</html>
