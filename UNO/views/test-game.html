@@ -18,12 +18,18 @@
         <h3>Feedback from server</h3>
         <p id="feedback"></p>
         <br>
-        <img id="card1" class="card" src='images/cards/r1.png' name='card' value='1' onclick="action('card1')"
-             alt='card:red 1'>
-        <img id="draw" class="card" src='images/cards/back.png' name='card' value='back' onclick="action('draw')"
+        <img id="card1" class="card" src='images/cards/r1.png' ondragend="post(1)"
+             onclick="post(1)" alt='card:red 1'>
+        <img id="draw" class="card" src='images/cards/back.png' onmouseup="post('draw')"
              alt='card:back'>
-        <br><p id="uno" onclick="action('uno')">Click to Say UNO</p>
-        <br><p id="skip" onclick="action('skip')">Click to Skip</p> 
+        <br><p id="ready" onclick="post('ready')">Click READY</p> 
+        <p id="red" onclick="post('red')">Click RED</p>
+        <p id="green" onclick="post('green')">Click GREEN</p>
+        <p id="blue" onclick="post('blue')">Click BLUE</p>
+        <p id="yellow" onclick="post('yellow')">Click YELLOW</p>
+        <p id="uno" onclick="post('uno')">Click to Say UNO</p>
+        <p id="skip" onclick="post('skip')">Click to Skip</p> 
+        <p id="exit" onclick="post('exit')">Click to EXIT</p>
       </div>
     </div>
 
@@ -34,6 +40,12 @@
         <input id="m" autocomplete="off" /><button>Send</button>
       </form>
     </div>
-
+    <!--
+<script>
+  post('cardImages');
+  post('playersInfo');
+  post('myInfo');
+</script>
+-->
   </body>
 </html>
