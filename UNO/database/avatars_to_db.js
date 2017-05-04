@@ -13,7 +13,7 @@
 const fs = require('fs');
 const db = require('./db');
 
-const avatarsPath = __dirname+'/../images/avatars';
+const avatarsPath = __dirname+'/../public/images/avatars';
 const files = fs.readdirSync(avatarsPath);
 
 files.forEach(function(f) {

@@ -1,7 +1,36 @@
+/* Set up game environment */
 const socket = io();
+
+const myId = { game_id: 5, user_id: 10 };
+const GAMESERVER = 'game';
+
+var readyPlay, seat_count, seat_turn, top_discard, direction, players;  // shared information of the game
+var timeOut, mySeat, myTurn, myCards, pickedCard;
+var playable = { color: "", number: "" }  // color: 'r', 'b', 'g', or 'y'; number: 0~9, 13, or 14
+var cardImages, playersInfo, playersState, myInfo, whoStart, roundEnd, gameEnd;
+
+// request server for card image file names, player infos
+
+/* Listening from server * /
+socket.on('game', function(msg) {
+  document.getElementById('feedback').innerHTML = msg;
+});*/
+/* Update */
+/* Draw Scene * /
+/* Check if in turn */
+/* Listening player event */
+/* Check timeout */
+/* Event response */
+// *
+
+//*/
+
+
 $(function () {
 //  var socket = io();
-
+  post('cardImages');
+  post('playersInfo');
+  post('myInfo');
   /* chat room need to solve chat channel */
   $('form').submit(function(){
     socket.emit('chat message', $('#m').val());
@@ -14,44 +43,18 @@ $(function () {
     $('#messages').append($('<li>').text(msg));
     window.scrollTo(0, document.body.scrollHeight);
   });
-
+  
   socket.on('game', function(msg) {
     document.getElementById('feedback').innerHTML = msg;
-  })
+  });
+
 });
 
-//        document.body.onload = addElement;
-          /* This part tempt to deal with game */
-          /* Set up game */
-/*        $(function addElement() {
-          const cardpath = '/images/cards/';
-          var card_inhand = {};
-          card_inhand = {'2': 'r1.png', '5': 'r3.png', '80': 'b3.png'};
+function post(e) {
+  document.getElementById("tosend").innerHTML = "You are going to send:" + e;
+  sendOut(e);
+}
 
-          /* Listening from server * /
-
-          socket.on('game', function(msgy){
-            if(msgy === '9999') msgy = 'it is string 9999';
-            $('#messages').append($('<li>').text(msgy));
-            window.scrollTo(0, document.body.scrollHeight);
-          });
-*/
-          /* Update */
-          /* Draw Scene * /
-          for (var prop in card_inhand) {
-            var newImg = document.createElement("img", {id: prop, alt: "img:"+prop});
-            var currentDiv = document.getElementById("board");
-            document.body.insertBefore(newImg, currentDiv);
-          } */
-          /* Check if in turn */
-          /* Listening player event */
-          /* Check timeout */
-          /* Event response */
-
-//        });
-
-function action(tagId) {
-  var msg = document.getElementById(tagId).id;
-  document.getElementById("tosend").innerHTML = "You are going to send:" + msg;
-  socket.emit('game', msg);
+function sendOut(msg) {
+  socket.emit(GAMESERVER, Object.assign({"word": msg}, myId));
 }
