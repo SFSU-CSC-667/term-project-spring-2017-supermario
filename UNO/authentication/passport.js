@@ -3,6 +3,7 @@ var passport = require( 'passport' );
 var LocalStrategy = require( 'passport-local' ).Strategy;
 db=require('../database/db');
 var bcrypt = require('bcrypt');
+const Users = require('../models/users');
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -18,10 +19,8 @@ var localStrategy = new LocalStrategy({
 	  passReqToCallback : true
    },
     function(req, username, password, done) {
-      db.one('SELECT * FROM users where email like $1 ', username).then(
-       user => {
-	  console.log(username)
-      console.log(user)
+      Users.findByEmail(username).then( user => {
+	  console.log(user);
       if ( user == null ) {
         return done( null, false, { message: 'Invalid user' } );
       };
@@ -33,12 +32,10 @@ var localStrategy = new LocalStrategy({
         done( null, user );
       });
 
-      }).catch(error => {
-        // error; 
- 		 console.log(error);
-      });
-   }
-  )
+      }).catch( error => {
+			console.log(error);
+	  });
+  });
 
 passport.use( 'local', localStrategy );
 

@@ -3,6 +3,7 @@ var router=express.Router();
 const passport = require('../authentication/passport')
 db=require('../database/db')
 var bcrypt = require('bcrypt');
+const Users = require('../models/users')
 const saltRounds = 10;
 
 
@@ -18,22 +19,23 @@ router.get('/', function(req, res, next) { // This function is called when recei
 
 
 router.post('/signup', (req, res, next) => {
-    db.none('SELECT * FROM users where email like $1 ', req.body.email).then( user => {
-    bcrypt.hash(req.body.password, saltRounds).then( (hash) => {
-    db.none('INSERT INTO users(email, encrypted_password, nick_name) VALUES($1, $2, $3)', [req.body.email, hash, req.body.nick_name])
-    .then(() => {
-		res.render('lobby', {auth_stat: 'Authenticated', email: req.body.email});
-    })
-    .catch(error => {
-        // error; 
- 		 console.log(error);
-    });
-    
-    });
-	}).catch(error => {
-        // any user has same email is found in database
+    Users.emailNotUsed(req.body.email).then( one => {
+    	bcrypt.hash(req.body.password, saltRounds).then( (hash) => {
+			user=req.body;
+			user.encrypted_password=hash;
+    		Users.createFromSignUp(user)
+    		.then(() => {
+				res.render('lobby', {auth_stat: 'Authenticated', email: req.body.email});
+    		})
+    		.catch(error => {
+        		// error; 
+ 		 		console.log(error);
+    		});
+		});
+	}).catch( error => {
 		res.render('signup_form', { msg: 'email is already used'});
-    });
+	});
+    
 });
 
 
