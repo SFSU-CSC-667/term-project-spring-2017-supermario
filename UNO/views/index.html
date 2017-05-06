@@ -1,76 +1,42 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-<script src="/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <!--<style>
+        body 
+        {
+            background-image: url("/images/splash/UNOBG.png");
+            background-repeat: no-repeat;
+            background-position: left top;
+            background-size: 60%;
+        }-->
+    </style>
+    <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+    <script src="/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
 </head>
 <body>
-<nav class = "navbar navbar-inverse">
-<div class = "container-fluid">
-<div class = "navbar-header">
-<a class = "navbar-brand" href="/">UNO</a>
-</div>
-<ul class = "nav navbar-nav navbar-left">
-<li><a href="/">Lobby</a></li>
-<li><a href="/game">Game</a></li>
-<li><a href="#" role="button" data-toggle="modal" data-target="#Instructions"> Instructions</a></li>
-</ul>
-<div id="Instructions" class="modal fade" role="dialog">
-<div class="modal-dialog">
-<div class="modal-content">
-<div class="modal-body">
-<p>Instructions go here</p>
-</div>
-<div class="modal-footer">
-<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-</div>
-</div>
-</div>
-</div>
-<ul class="nav navbar-nav navbar-right">
-<li><a href="/login">Login/Sign Up</a></li>
-</ul>
-</div>
-</nav>
-<div class="row">
-<div class="col-md-9">
-<!--<h2> Welcome to {{title}}</h2>-->
-<!--Code for each game that exists-->
-<div class="panel panel-default">
-<div class="panel-heading">
-<div class="row">
-<div class="col-md-7">
-<h4>Game #gameid</h4>
-</div>
-<div class="col-md-4">
-<h5># of players</h5>
-</div>
-<div class="col-md-1">
-<a href="#" role="button" class="btn btn-success">Join Game</a>
-</div>
-</div>
-</div>
-<div class="panel-body">
-<div class="row">
-<div class="col-md-12">
-<ul class="list-inline">
-<!--Code for each player in game-->
-<li>playerid1</li>
-<li>playerid2</li>
-<li>playerid3</li>
-<li>playerid4</li>
-</ul>
-</div> 
-</div>
-</div>
-</div>
-</div>
-<div class="col-md-3">
-<!--Put Chat Widget here-->
-<h3> Chat widget here </h3>
-</div>
-</div>
-
+    <div class="row">
+        <div class="col-md-7">
+            <img src="/images/splash/UNOBG.png" class="img-responsive" alt="UNO Splash Image">
+        </div>
+        <div class="col-md-5">
+            <h2>
+                UNO is an American card game that is played with a specially printed deck. The game was originally developed in 1971 by Merle Robbins in Reading, Ohio, a suburb of Cincinnati.
+            </h2><br>
+            <h3>
+                The aim of the game is to be the first player to score 500 points, achieved by a player discarding all of their cards and earning points corresponding to the value of the remaining cards still held by the other players. <br><br>
+                The deck consists of 108 cards, of which there are 25 of each color (red, green, blue, and yellow), each color having two of each rank except zero. The ranks in each color are zero to nine, "Skip", "Draw Two", and "Reverse". In addition, the deck contains four each of "Wild" and "Wild Draw Four" cards. <br><br>
+                To start a hand, seven cards are dealt to each player, and the top card of the deck is flipped over and set aside to begin the discard pile. The player to the dealer's left plays first, unless the first card on the discard pile is an action or Wild card. On a player's turn, he/she must do one of the following:
+                <li>play a card matching the discard in color, number, or symbol</li>
+                <li>play a Wild card, or a playable Wild Draw Four card</li>
+                <li>draw the top card of the deck</li>
+                <br>
+                Play proceeds clockwise around the table.
+            </h3>
+            <br><br><br>                  
+            <a href="/signup" role="button" class="btn btn-primary btn-lg">Sign Up</a>
+            <a href="/login" role="button" class="btn btn-primary btn-lg">Login</a>
+        </div>
+    </div>
 </body>
 </html>
