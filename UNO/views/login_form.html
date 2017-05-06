@@ -1,8 +1,30 @@
-extends layout
- 
-<content>
-    <h1> {{title}}</h1>
-    <form name="login", method="post">
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+  <script src="/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+</head>
+<body>
+    <div class="row">
+        <div class="col-md-4 col-md-offset-4 text-center">
+            <h1>Login to UNO</h1>
+            <img src="/images/splash/UNOBG.png" class="img-responsive" alt="UNO Splash Image">
+
+            <form name="login", method="post">
+                <div class="form-group">
+                    <label for="email">Email address:</label>
+                    <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+		        </div>
+                <div class="form-group">
+                    <label for="pwd">Password:</label>
+                    <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="password">
+		        </div>
+                <button type="submit" class="btn btn-default">Login</button>
+        </div>  
+    </div>
+    
+<!--    
         <div class="input">
             <span label=Username>
             <input type="text", name="email">
@@ -17,4 +39,6 @@ extends layout
             <input type="submit", value="log in">
 		</div>
 	</form>
-</content>
+    -->
+</body>
+</html>
