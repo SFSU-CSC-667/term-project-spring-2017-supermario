@@ -1,9 +1,11 @@
 var express = require( 'express' );
 var router=express.Router();
-const passport = require('../authentication/passport')
-db=require('../database/db')
+const passport = require('../authentication/passport');
+var db=require('../database/db');
 var bcrypt = require('bcrypt');
 const Users = require('../models/users')
+const Games = require('../models/games')
+const Players = require('../models/players')
 const saltRounds = 10;
 
 
@@ -65,7 +67,12 @@ router.get('/login', function(req, res, next) {
 
 router.get('/lobby', function(req, res, next) { // This function is called when receive request " GET /lobby " 
 	if (req.isAuthenticated()){
-	res.render('lobby', { auth_stat: 'Authenticated', email: req.user.email });
+		Games.listJoinables().then( games=> {
+			res.render('lobby', { auth_stat: 'Authenticated', email: req.user.email, games: games});
+		}).catch( error => {
+			games={};
+			res.render('lobby', { auth_stat: 'Authenticated', email: req.user.email, games: games});
+		});
 	} else {
 	res.render('lobby', { auth_stat: 'Unauthenticated'});
 	}
@@ -77,4 +84,32 @@ router.get('/logout', function(req, res){
   res.redirect('/');
 });
 
+router.get('/create_game', function(req, res, next) {
+	console.log(req.user.email);
+	Users.findByEmail(req.user.email).then( user => {
+		console.log(user.id);
+		Games.create(user.id).then( game => {
+			console.log(game.id);
+			console.log(user.id);
+			var player = {
+				game_id: game.id,
+				user_id: user.id,
+				seat_number: 1,
+			};
+			Players.create(player).then( player => {
+				console.log(player);
+				//res.redirect('game/'+game.id);
+				res.redirect('lobby');
+
+			}).catch(error => {
+				console.log(error);
+			});
+		});
+		
+	}).catch( error => {
+		console.log(error);
+		res.render('lobby', {auth_stat: 'Authenticated', email: req.user.email});
+	});
+
+});
 module.exports = router;

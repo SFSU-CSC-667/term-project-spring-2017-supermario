@@ -12,7 +12,7 @@ class Games extends Models {
 	}
 		
 	static listJoinables(){
-		return db.many("select * from games where joinable = true");
+		return db.many("select * from games where joinable = true limit 20");
 	}
 }
 
