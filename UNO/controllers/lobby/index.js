@@ -5,7 +5,6 @@ const Games=require('../../models/games')
 const Players=require('../../models/players')
 const lobby = (app, server) => {
   const io = socketIo(server);
-
   app.set('io', io);
 
   io.on('connection', socket => {
@@ -58,4 +57,6 @@ const lobby = (app, server) => {
   });
 }
 
-module.exports = { lobby };
+/* below line is commented for websocket conflict, comment out it if the conflict resolved.
+	module.exports = { lobby };
+*/

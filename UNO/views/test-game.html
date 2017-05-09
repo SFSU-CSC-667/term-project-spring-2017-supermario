@@ -11,17 +11,21 @@
   </head>
   <body>
     <h2>Test Game</h2>
-    <div id="gameBorad">
-      <div id="board">
-        <h3>Data to send to server</h3>
+    <div id="gameRoom">
+      <div id="gameBorad">
+        Select game id<select id='selectGame'></select>​
+        Select user id<select id='selectUser'></select>​
         <p id="tosend"></p>
-        <h3>Feedback from server</h3>
-        <p id="feedback"></p>
+        <h3>Group info from server</h3>
+        <p id="groupChannel"></p>
+        <h3>Private user info from server</h3>
+        <p id="userChannel"></p>
         <br>
-        <img id="card1" class="card" src='images/cards/r1.png' ondragend="post(1)"
-             onclick="post(1)" alt='card:red 1'>
         <img id="draw" class="card" src='images/cards/back.png' onmouseup="post('draw')"
              alt='card:back'>
+        <img id="card1" class="card" src='images/cards/back.png' ondragend="post(1)"
+             onclick="post(1)" alt='card:any card'>
+        select a card<select id='selectCard' onselect='showCard(cardId)'></select>
         <br><p id="ready" onclick="post('ready')">Click READY</p> 
         <p id="red" onclick="post('red')">Click RED</p>
         <p id="green" onclick="post('green')">Click GREEN</p>
@@ -33,19 +37,13 @@
       </div>
     </div>
 
-    <div id="chatRoom">
+    <div id="gameChat">
 
       <ul id="messages"></ul>
       <form action="">
         <input id="m" autocomplete="off" /><button>Send</button>
       </form>
     </div>
-    <!--
-<script>
-  post('cardImages');
-  post('playersInfo');
-  post('myInfo');
-</script>
--->
+
   </body>
 </html>
