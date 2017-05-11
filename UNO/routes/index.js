@@ -2,7 +2,7 @@ var express = require( 'express' );
 var router=express.Router();
 const passport = require('../authentication/passport');
 var db=require('../database/db');
-var bcrypt = require('bcrypt');
+//var bcrypt = require('bcrypt');
 const Users = require('../models/users')
 const Games = require('../models/games')
 const Players = require('../models/players')
@@ -22,9 +22,10 @@ router.get('/', function(req, res, next) { // This function is called when recei
 
 router.post('/signup', (req, res, next) => {
     Users.emailNotUsed(req.body.email).then( one => {
-    	bcrypt.hash(req.body.password, saltRounds).then( (hash) => {
+    	//bcrypt.hash(req.body.password, saltRounds).then( (hash) => {
 			user=req.body;
-			user.encrypted_password=hash;
+			user.encrypted_password=user.password
+			//user.encrypted_password=hash;
     		Users.createFromSignUp(user)
     		.then(() => {
 				res.render('lobby', {auth_stat: 'Authenticated', email: req.body.email});
@@ -33,13 +34,12 @@ router.post('/signup', (req, res, next) => {
         		// error; 
  		 		console.log(error);
     		});
-		});
+		//});
 	}).catch( error => {
 		res.render('signup_form', { msg: 'email is already used'});
 	});
     
 });
-
 
 router.get('/signup', function(req, res, next) {
 	res.render('signup_form', { title: 'Sign Up' });
