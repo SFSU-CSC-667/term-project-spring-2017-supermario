@@ -1,25 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <!--<style>
-        body 
-        {
-            background-image: url("/images/splash/UNOBG.png");
-            background-repeat: no-repeat;
-            background-position: left top;
-            background-size: 60%;
-        }-->
-    </style>
+    <title>UNO!</title>
     <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
     <script src="/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+    <style>
+    body {
+        background-color: #f7eef3;
+        }
+    </style>
 </head>
 <body>
     <div class="row">
-        <div class="col-md-7">
+        <div class="col-md-7 ">
             <img src="/images/splash/UNOBG.png" class="img-responsive" alt="UNO Splash Image">
         </div>
-        <div class="col-md-5">
+        <div class="col-md-4">
             <h2>
                 UNO is an American card game that is played with a specially printed deck. The game was originally developed in 1971 by Merle Robbins in Reading, Ohio, a suburb of Cincinnati.
             </h2><br>
@@ -33,9 +30,15 @@
                 <br>
                 Play proceeds clockwise around the table.
             </h3>
-            <br><br><br>                  
-            <a href="/signup" role="button" class="btn btn-primary btn-lg">Sign Up</a>
-            <a href="/login" role="button" class="btn btn-primary btn-lg">Login</a>
+            <br><br><br> 
+            <div class="row">
+                <div class="col-md-6">
+                    <a href="/signup" role="button" class="btn btn-warning btn-lg btn-block">Sign Up</a>
+                </div>
+                <div class="col-md-6">
+                    <a href="/login" role="button" class="btn btn-danger btn-lg btn-block">Login</a>
+                </div>
+            </div>         
         </div>
     </div>
 </body>

@@ -13,8 +13,8 @@ const db_default_password = {
 	port: 5432,
 	db: 'UNO',
 	user: 'postgres',
-	password: 'postgres',
+	password: '123',
 }
 
 
-module.exports=db_no_password
+module.exports=db_default_password;

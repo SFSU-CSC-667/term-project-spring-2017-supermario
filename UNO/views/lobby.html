@@ -1,62 +1,80 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.css">
-<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+	<title>Game Lobby</title>
+	<link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.css">
+	<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+	<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+ 	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
     <script src="/js/lobby.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-<script src="/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<script src="/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+	<style>
+    body {
+        background-color: #f7eef3;
+        }
+    </style>
 </head>
 <body>
-<nav class = "navbar navbar-inverse">
-<div class = "container-fluid">
-	<div class = "navbar-header">
-		<a class = "navbar-brand" href="/">UNO</a>
-	</div>
-	<ul class = "nav navbar-nav navbar-left">
-	<li><a href="/">Lobby</a></li>
-	<li><a href="/game">Game</a></li>
-	<li><a href="#" role="button" data-toggle="modal" data-target="#Instructions"> Instructions</a></li>
-	</ul>
-	<div id="Instructions" class="modal fade" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-body">
-					<p>Instructions go here</p>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	<!--Navbar-->
+	<nav class = "navbar navbar-inverse">
+		<div class = "container-fluid">
+			<div class = "navbar-header">
+				<a class = "navbar-brand" href="/">UNO</a>
+			</div>
+			<ul class = "nav navbar-nav navbar-left">
+				<li class="active"><a href="/">Lobby</a></li>
+				<li><a href="#" role="button" data-toggle="modal" data-target="#Instructions"> Instructions</a></li>
+			</ul>
+			<div id="Instructions" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-body">
+							<p>The aim of the game is to be the first player to score 500 points, achieved by a player discarding all of their cards and earning points corresponding to the value of the remaining cards still held by the other players. </p>
+							<p>The deck consists of 108 cards, of which there are 25 of each color (red, green, blue, and yellow), each color having two of each rank except zero. The ranks in each color are zero to nine, "Skip", "Draw Two", and "Reverse". In addition, the deck contains four each of "Wild" and "Wild Draw Four" cards. </p>
+							<p>To start a hand, seven cards are dealt to each player, and the top card of the deck is flipped over and set aside to begin the discard pile. The player to the dealer's left plays first, unless the first card on the discard pile is an action or Wild card. On a player's turn, he/she must do one of the following: </p>
+							<li>play a card matching the discard in color, number, or symbol</li>
+							<li>play a Wild card, or a playable Wild Draw Four card</li>
+							<li>draw the top card of the deck</li><br>
+							<p>Play proceeds clockwise around the table. </p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
 				</div>
 			</div>
+			<ul class="nav navbar-nav navbar-right">
+			<!--If player logged in, show Welcome playername & logout, else show login or sign up options.-->
+				<li><a href="/login">Login</a></li>
+				<li><a href="/logout">Logout</a></li>
+				<li><a href="/signup">Sign Up</a></li>
+			</ul>
 		</div>
-	</div>
-	<ul class="nav navbar-nav navbar-right">
-	<li><a href="/login">Login/Sign Up</a></li>
-	</ul>
-</div>
-</nav>
-<!--<a href="/create_game" role="button" class="btn btn-success" onclick="create_game()">Create Game</a>-->
-<button class="btn btn-success" onclick="create_game('{{email}}')">Create Game</button>
-<!--<button class="btn btn-success" onclick="create_game()">Create Game</button>-->
-<div class="row">
-	<div class="col-md-9">
-<!--<h2> Welcome to {{title}}</h2>-->
-<!--Code for each game that exists-->
+	</nav>
+	<!--End of Navbar-->
+
+	<!--<a href="/create_game" role="button" class="btn btn-success" onclick="create_game()">Create Game</a>-->
+	<!--<button class="btn btn-success" onclick="create_game()">Create Game</button>-->
+	<div class="row">
+		<div class="col-md-7 col-md-offset-1">
+			<h2>Game Lobby 
+				<button class="btn btn-warning btn-lg pull-right" onclick="create_game('{{email}}')">Create Game</button>
+			</h2><br>
+		<!--Game Panel-->
 		<div id="game-list">
 			{{#each games}}
 			<div id="game{{this.id}}" class="panel panel-default">
 				<div class="panel-heading">
 					<div class="row">
-						<div class="col-md-7">
+						<div class="col-md-5">
 							<h4>Game {{this.id}}</h4>
 						</div>
 						<div class="col-md-4">
 							<h5># of players</h5>
 						</div>
-						<div class="col-md-1">
-							<a href="#" role="button" class="btn btn-success">Join Game</a>
+						<div class="col-md-3">
+							<a href="#" role="button" class="btn btn-danger pull-right">Join Game</a>
 						</div>
 					</div>
 				</div>
@@ -64,7 +82,7 @@
 					<div class="row">
 						<div class="col-md-12">
 							<ul class="list-inline">
-<!--Code for each player in game-->
+							<!--Code for each player in game-->
 							<li>playerid1</li>
 							<li>playerid2</li>
 							<li>playerid3</li>
@@ -77,11 +95,13 @@
 			{{/each}}
 		</div>
 	</div>
-</div>
-<div id="chat" class="col-md-3">
+	<div class="col-md-4">
+		<div id="chat">
 		<!--Put Chat Widget here-->
 		<h3> Chat widget here </h3>
 		test msg
+		</div>
+	</div>
 </div>
 
 </body>
