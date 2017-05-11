@@ -4,7 +4,7 @@ const Users=require('../../models/users')
 const Games=require('../../models/games')
 const Players=require('../../models/players')
 const lobby = (app, server) => {
-  const io = socketIo(server);
+  //const io = socketIo(server);
   app.set('io', io);
 
   io.on('connection', socket => {
