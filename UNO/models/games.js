@@ -18,14 +18,16 @@ class Games extends Models {
 			console.log(Games);
 			console.log(Users);
 			Games.findById(obj.game_id).then( game => {
-				game.seat_count+=1;
-				if (game.seat_count > MaxPlayer)
+				if (game.seat_count === MaxPlayer)
 					throw "Error: The room is full";
-				console.log(game);	
-				db.none("update games set seat_count=${seat_count} where id=${id}",game).then(success => {
 					console.log(game);
-					obj.seat_number=game.seat_count;
+					obj.seat_number=game.seat_count+1;
 					db.one("insert into players(game_id, user_id, seat_number) values(${game_id}, ${user_id}, ${seat_number}) returning game_id, user_id", obj).then( pl => {
+						game.seat_count++;
+						if (game.seat_count === MaxPlayer)
+							game.joinable=false;
+						console.log(game);	
+						db.none("update games set seat_count=${seat_count}, joinable=${joinable} where id=${id}",game).then(success => {
 						fulfill(pl);
 					});
 				});
