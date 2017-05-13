@@ -24,11 +24,6 @@ return new Promise( function(fulfill, reject){
 						seat_number: 1,
 					};
 					Players.create(player).then( player => {
-						for (seatNum=2; seatNum <= MaxPlayer; seatNum++){
-							Players.createEmptySeats(game.id, seatNum).catch( error => {
-								console.log(error);
-							});
-						}
 						console.log(player);
 						Games.listJoinables().then( games=> {
 							/*
@@ -71,11 +66,14 @@ return new Promise( function(fulfill, reject){
 					game_id: game.id,
 					user_id: user.id,
 				};
-				Players.addPlayer(player).then( pl => {
+				Games.addPlayer(player).then( pl => {
 					console.log(pl);
-					var toPlayer = {game_id: game.id, action: "enter_gameroom"};
-					var toGroup = {game_id: game.id, user_nick_name: user.email, action: "update_one_player"};
-					fulfill({player:toPlayer, group:toGroup});
+					Games.listJoinables().then( games=> {
+						console.log(games);
+						var toPlayer = {game_id: game.id, action: "enter_gameroom"};
+						var toGroup = {games: games, action:"update_games"};
+						fulfill({player:toPlayer, group:toGroup});
+					});
 				});
 			});
 		}).catch(error => {

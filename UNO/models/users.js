@@ -6,6 +6,10 @@ class Users extends Models{
 		return db.none("select * from users where email like $1", str);
 	}
 
+	static findById(id){
+		return db.one("select * from users where id = $1", id);
+	}
+
 	static findByEmail(str){
 		return db.one("select * from users where email like $1", str);
 	}

@@ -41,7 +41,7 @@ var gamelist =	`{{#each games}}
 							<h5># of players</h5>
 						</div>
 						<div class="col-md-3">
-							<a href="#" role="button" class="btn btn-danger pull-right", onclick="join_game('{{email}}','{{this.id}}')">Join Game</a>
+							<a href="#" role="button" class="btn btn-danger pull-right", onclick="join_game('{{../email}}','{{this.id}}')">Join Game</a>
 						</div>
 					</div>
 				</div>
@@ -50,10 +50,9 @@ var gamelist =	`{{#each games}}
 						<div class="col-md-12">
 							<ul class="list-inline">
 							<!--Code for each player in game-->
-							<li>{{this.playerid1}}</li>
-							<li>{{this.playerid2}}</li>
-							<li>{{this.playerid3}}</li>
-							<li>{{this.playerid4}}</li>
+							{{#each this.players}}
+							<li>{{this}}</li>
+							{{/each}}
 							</ul>
 						</div>
 					</div>

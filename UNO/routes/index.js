@@ -71,6 +71,7 @@ router.get('/lobby', function(req, res, next) { // This function is called when 
 			res.render('lobby', { auth_stat: 'Authenticated', email: req.user.email, games: games, user: req.user});
 		}).catch( error => {
 			games={};
+			console.log(error);
 			res.render('lobby', { auth_stat: 'Authenticated', email: req.user.email, games: games, user: req.user});
 		});
 	} else {
