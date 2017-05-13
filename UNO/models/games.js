@@ -1,7 +1,7 @@
 const db=require('../database/db');
 const Models=require('./models');
 const Players=require('./players');
-const Users=require('./Users');
+const Users=require('./users');
 const MaxPlayer=4;
 class Games extends Models {
 
@@ -15,8 +15,6 @@ class Games extends Models {
 
 	static addPlayer(obj) {
 		return new Promise(function(fulfill, reject){ 
-			console.log(Games);
-			console.log(Users);
 			Games.findById(obj.game_id).then( game => {
 				if (game.seat_count === MaxPlayer)
 					throw "Error: The room is full";
@@ -38,6 +36,26 @@ class Games extends Models {
 		});
 	};
 		
+	static removePlayer(obj) {
+		return new Promise(function(fulfill, reject){ 
+			Games.findById(obj.game_id).then( game => {
+				console.log(game);
+				db.one("delete players where game_id = ${game_id} and user_id = ${user_id}) returning game_id, user_id", obj).then( pl => {
+					game.seat_count--;
+					if (game.seat_count < MaxPlayer)
+						game.joinable=true;
+					console.log(game);	
+					db.none("update games set seat_count=${seat_count}, joinable=${joinable} where id=${id}",game).then(success => {
+						fulfill(pl);
+					});
+				});
+			}).catch( error => {
+				console.log(error);
+				reject(error);
+			});
+		});
+	};
+
 	static listJoinables(){
 
 		return new Promise(function(fulfill, reject){
