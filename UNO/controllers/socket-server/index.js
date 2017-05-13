@@ -1,7 +1,8 @@
 const socketIo = require('socket.io');
 const outPackage = require('../game');
-
+const lobbyController = require('../lobby');
 const GAMESERVER = 'game server';
+const LOBBYSERVER = 'lobby server';
 
 const socketServer = (app, server) => {
   const io = socketIo(server);
@@ -24,6 +25,18 @@ const socketServer = (app, server) => {
         console.log('server received ', JSON.stringify(msg));
           socket.emit(GAMESERVER, outPackage(msg).player);
           io.sockets.emit(GAMESERVER, outPackage(msg).group);
+      });
+      
+	  socket.on(LOBBYSERVER, function(msg) {
+        // next line is for testing use
+        console.log('server received ', JSON.stringify(msg));
+		  lobbyController(msg).then(ret => {	
+			console.log(ret.group.games);
+          	socket.emit(LOBBYSERVER, ret.player);
+          	io.sockets.emit(LOBBYSERVER, ret.group);
+		  }).catch( error => {
+			console.log(error);
+		  });
       });
   });
 }

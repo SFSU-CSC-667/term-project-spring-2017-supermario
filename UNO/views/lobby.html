@@ -62,7 +62,7 @@
 				<button class="btn btn-warning btn-lg pull-right" onclick="create_game('{{email}}')">Create Game</button>
 			</h2><br>
 		<!--Game Panel-->
-		<div id="game-list">
+		<div id="gamelist">
 			{{#each games}}
 			<div id="game{{this.id}}" class="panel panel-default">
 				<div class="panel-heading">
@@ -71,10 +71,10 @@
 							<h4>Game {{this.id}}</h4>
 						</div>
 						<div class="col-md-4">
-							<h5># of players</h5>
+							<h5># of players: {{this.players.length}}</h5>
 						</div>
 						<div class="col-md-3">
-							<a href="#" role="button" class="btn btn-danger pull-right">Join Game</a>
+							<button class="btn btn-danger pull-right" onclick="join_game('{{../email}}',{{this.id}})">Join Game</a>
 						</div>
 					</div>
 				</div>
@@ -83,10 +83,9 @@
 						<div class="col-md-12">
 							<ul class="list-inline">
 							<!--Code for each player in game-->
-							<li>playerid1</li>
-							<li>playerid2</li>
-							<li>playerid3</li>
-							<li>playerid4</li>
+							{{#each this.players}}
+							<li>{{this}}</li>
+							{{/each}}
 							</ul>
 						</div>
 					</div>
@@ -137,6 +136,5 @@
 		</div>
 	</div>
 </div>
-
 </body>
 </html>

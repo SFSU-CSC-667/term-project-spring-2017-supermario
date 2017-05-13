@@ -8,7 +8,6 @@ var app = require('../app');
 var debug = require('debug')('uno:server');
 var http = require('http');
 const Socket = require('../controllers/socket-server');
-// const LobbySocket = require('../controllers/lobby')
 
 /**
  * Get port from environment and store in Express.
@@ -23,7 +22,6 @@ app.set('port', port);
 
 var server = http.createServer(app);
 Socket(app, server);
-// LobbySocket.lobby(app, server);
 
 /**
  * Listen on provided port, on all network interfaces.
