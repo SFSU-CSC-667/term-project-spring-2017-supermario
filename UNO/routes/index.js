@@ -68,10 +68,10 @@ router.get('/login', function(req, res, next) {
 router.get('/lobby', function(req, res, next) { // This function is called when receive request " GET /lobby "
 	if (req.isAuthenticated()){
 		Games.listJoinables().then( games=> {
-			res.render('lobby', { auth_stat: 'Authenticated', email: req.user.email, games: games});
+			res.render('lobby', { auth_stat: 'Authenticated', email: req.user.email, games: games, user: req.user});
 		}).catch( error => {
 			games={};
-			res.render('lobby', { auth_stat: 'Authenticated', email: req.user.email, games: games});
+			res.render('lobby', { auth_stat: 'Authenticated', email: req.user.email, games: games, user: req.user});
 		});
 	} else {
 	res.render('lobby', { auth_stat: 'Unauthenticated'});
