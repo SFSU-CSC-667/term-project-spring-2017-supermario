@@ -26,14 +26,9 @@ return new Promise( function(fulfill, reject){
 					Players.create(player).then( player => {
 						console.log(player);
 						Games.listJoinables().then( games=> {
-							/*
-							games.forEach( game => {
-								Players.findByGameId(game.id).then( pls => {
-									game.players=pls;
-								});
-							});	*/					
-							var msg={games: games, action:"update_games"};
-							fulfill({player:msg, group:msg});
+							var toPlayer = {game_id: game.id, action: "enter_gameroom"};
+							var toGroup = {games: games, action:"update_games"};
+							fulfill({player:toPlayer, group:toGroup});
 						}).catch( error => {
 							games={};
 							var msg={games: games, action:"update_games"};

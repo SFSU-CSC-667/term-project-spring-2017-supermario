@@ -13,6 +13,9 @@ $(function () {
 			break;
 		case "update_one_player":
 			break;
+		case "enter_gameroom":
+			window.location.href ="/game/"+msg.game_id
+			break;
 	}
   });	
 });

@@ -32,7 +32,7 @@ const socketServer = (app, server) => {
         console.log('server received ', JSON.stringify(msg));
 		  lobbyController(msg).then(ret => {	
 			console.log(ret.group.games);
-    //      	socket.emit(LOBBYSERVER, ret.player);
+          	socket.emit(LOBBYSERVER, ret.player);
           	io.sockets.emit(LOBBYSERVER, ret.group);
 		  }).catch( error => {
 			console.log(error);
