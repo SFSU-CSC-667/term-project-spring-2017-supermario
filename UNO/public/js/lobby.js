@@ -41,7 +41,7 @@ var gamelist =	`{{#each games}}
 							<h4>Game {{this.id}}</h4>
 						</div>
 						<div class="col-md-4">
-							<h5># of players</h5>
+							<h5># of players: {{this.players.length}}</h5>
 						</div>
 						<div class="col-md-3">
 							<a href="#" role="button" class="btn btn-danger pull-right", onclick="join_game('{{../email}}','{{this.id}}')">Join Game</a>

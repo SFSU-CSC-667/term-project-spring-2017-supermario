@@ -1,8 +1,8 @@
-const db=require('../database/db')
-const Models=require('./models')
-const Players=require('./players')
-const Users=require('./Users')
-
+const db=require('../database/db');
+const Models=require('./models');
+const Players=require('./players');
+const Users=require('./Users');
+const MaxPlayer=4;
 class Games extends Models {
 
 	static create(){
@@ -19,6 +19,8 @@ class Games extends Models {
 			console.log(Users);
 			Games.findById(obj.game_id).then( game => {
 				game.seat_count+=1;
+				if (game.seat_count > MaxPlayer)
+					throw "Error: The room is full";
 				console.log(game);	
 				db.none("update games set seat_count=${seat_count} where id=${id}",game).then(success => {
 					console.log(game);
