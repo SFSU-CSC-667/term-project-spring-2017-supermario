@@ -4,7 +4,11 @@ Models=require('./models')
 class Games extends Models {
 
 	static create(){
-		return db.one("insert into games(joinable) values(true) returning id, joinable");
+		return db.one("insert into games(seat_count,joinable) values(1,true) returning id, joinable");
+	}
+
+	static update(obj){
+		return db.none("update games values(${seat_count},${seat_turn},), where id=${id}",obj);
 	}
 
 	static findById(id){
@@ -12,7 +16,7 @@ class Games extends Models {
 	}
 		
 	static listJoinables(){
-		return db.many("select * from games where joinable = true limit 20");
+		return db.many("select * from games where joinable = true limit 20 order by id ASC");
 	}
 }
 
