@@ -12,6 +12,42 @@
     </style>
 </head>
 <body>
+    <!--Navbar-->
+	<nav class = "navbar navbar-inverse">
+		<div class = "container-fluid">
+			<div class = "navbar-header">
+				<a class = "navbar-brand" href="/">UNO</a>
+			</div>
+			<ul class = "nav navbar-nav navbar-left">
+				<li><a href="/">Lobby</a></li>
+				<li><a href="#" role="button" data-toggle="modal" data-target="#Instructions"> Instructions</a></li>
+			</ul>
+			<div id="Instructions" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-body">
+							<p>The aim of the game is to be the first player to score 500 points, achieved by a player discarding all of their cards and earning points corresponding to the value of the remaining cards still held by the other players. </p>
+							<p>The deck consists of 108 cards, of which there are 25 of each color (red, green, blue, and yellow), each color having two of each rank except zero. The ranks in each color are zero to nine, "Skip", "Draw Two", and "Reverse". In addition, the deck contains four each of "Wild" and "Wild Draw Four" cards. </p>
+							<p>To start a hand, seven cards are dealt to each player, and the top card of the deck is flipped over and set aside to begin the discard pile. The player to the dealer's left plays first, unless the first card on the discard pile is an action or Wild card. On a player's turn, he/she must do one of the following: </p>
+							<li>play a card matching the discard in color, number, or symbol</li>
+							<li>play a Wild card, or a playable Wild Draw Four card</li>
+							<li>draw the top card of the deck</li><br>
+							<p>Play proceeds clockwise around the table. </p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<ul class="nav navbar-nav navbar-right">
+			<!--If player logged in, show Welcome playername & logout, else show login or sign up options.-->
+				<li><a href="/login">Login</a></li>
+				<li><a href="/signup">Sign Up</a></li>
+			</ul>
+		</div>
+	</nav>
+	<!--End of Navbar-->
     <div class="row">
         <div class="col-md-7 ">
             <img src="/images/splash/UNOBG.png" class="img-responsive" alt="UNO Splash Image">
