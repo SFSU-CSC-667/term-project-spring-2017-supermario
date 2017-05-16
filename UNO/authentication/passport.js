@@ -2,7 +2,7 @@
 var passport = require( 'passport' );
 var LocalStrategy = require( 'passport-local' ).Strategy;
 db=require('../database/db');
-var bcrypt = require('bcrypt');
+//var bcrypt = require('bcrypt');
 const Users = require('../models/users');
 
 passport.serializeUser(function(user, done) {
@@ -24,13 +24,13 @@ var localStrategy = new LocalStrategy({
       if ( user == null ) {
         return done( null, false, { message: 'Invalid user' } );
       };
-      bcrypt.compare(password, user.encrypted_password).then( (res) => {
+  //    bcrypt.compare(password, user.encrypted_password).then( (res) => {
     // res == true 
-		if (res == false) {
-        	return done( null, false, { message: 'Invalid password' } );
-        }
+	//	if (res == false) {
+    //    	return done( null, false, { message: 'Invalid password' } );
+    //    }
         done( null, user );
-      });
+ //     });
 
       }).catch( error => {
 			console.log(error);

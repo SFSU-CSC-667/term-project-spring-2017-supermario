@@ -1,19 +1,23 @@
-db=require('../database/db')
-Models=require('./models')
+const db=require('../database/db');
+const Games=require('./games');
+const Users=require('./users');
+const Models=require('./models');
 
 class Players extends Models {
 
 	static create(obj) {
 		return db.one("insert into players(game_id, user_id, seat_number) values(${game_id}, ${user_id}, ${seat_number}) returning game_id, user_id", obj);
-	}
+	};
 
-	static findById(id) {
-		return db.one("select * from players where id = $1", id);
-	}
-		
-	static listJoinables() {
-		return db.many("select * from games where joinable = true");
-	}
+
+
+	static findByGameId(game_id) {
+		return db.many("select * from players where game_id = $1 order by seat_number ASC", game_id);
+	};
+
+	static findByGameSeat(game_id,seat_number) {
+		return db.one("select * from players where game_id = $1 and seat_number = $2", game_id, seat_number);
+	};
 }
 
 module.exports=Players;

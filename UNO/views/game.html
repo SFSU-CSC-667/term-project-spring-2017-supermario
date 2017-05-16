@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Game</title>
+
+ 	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="/js/test-game.js"></script>
+    <link rel="stylesheet" type="text/css" href="/css/test-game.css">
+
+  </head>
+  <body>
+    <h2>Game Room {{game_id}}</h2>
+    <div id="gameRoom">
+      <div id="gameBorad">
+        Select game id<select id='selectGame'></select>​
+        Select user id<select id='selectUser'></select>​
+        <p id="tosend"></p>
+        <h3>Group info from server</h3>
+        <p id="groupChannel"></p>
+        <h3>Private user info from server</h3>
+        <p id="userChannel"></p>
+        <br>
+        <img id="draw" class="card" src='/images/cards/back.png' onmouseup="post('draw')"
+             alt='card:back'>
+        <img id="card1" class="card" src='/images/cards/back.png' ondragend="post(1)"
+             onclick="post(1)" alt='card:any card'>
+        select a card<select id='selectCard' onselect='showCard(cardId)'></select>
+        <br><p id="ready" onclick="post('ready')">Click READY</p> 
+        <p id="red" onclick="post('red')">Click RED</p>
+        <p id="green" onclick="post('green')">Click GREEN</p>
+        <p id="blue" onclick="post('blue')">Click BLUE</p>
+        <p id="yellow" onclick="post('yellow')">Click YELLOW</p>
+        <p id="uno" onclick="post('uno')">Click to Say UNO</p>
+        <p id="skip" onclick="post('skip')">Click to Skip</p> 
+        <p id="exit" onclick="post('exit')">Click to EXIT</p>
+      </div>
+    </div>
+
+    <div id="gameChat">
+
+      <ul id="messages"></ul>
+      <form action="">
+        <input id="m" autocomplete="off" /><button>Send</button>
+      </form>
+    </div>
+
+  </body>
+</html>
