@@ -1,10 +1,7 @@
-const socketIo = require('socket.io');
-const db = require('../../database/game');
 const Users=require('../../models/users');
 const Games=require('../../models/games');
 const Players=require('../../models/players');
 const Messages=require('../../models/messages');
-const socketServer=require('../socket-server');
 const MaxPlayer = 4;
 
 function lobby(msg) {
