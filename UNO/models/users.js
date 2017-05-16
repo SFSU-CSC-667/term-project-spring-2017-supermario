@@ -19,7 +19,7 @@ class Users extends Models{
 	}
 	
 	static createFromSignUp(obj){
-		return db.none('insert into users(email, encrypted_password, nick_name) values(${email},${encrypted_password},${nick_name})',obj);
+		return db.none('insert into users(email, encrypted_password, nick_name, avatar_id) values(${email},${encrypted_password},${nick_name}, ${avatar_id})',obj);
     }
 }
 
