@@ -10,7 +10,7 @@ var cards={}, players={}, myInfo, whoStart, roundEnd, gameEnd;
 // request server for card image file names, player infos
 
 var hands=`{{#each hands}}
-		  <img src="/images/cards/{{this.image_url}}" alt="#" width="150" height="150" onclick="play_hand('{{this.id}}')">
+		  <img src="/images/cards/{{this.image_url}}" alt="#" width="50" height="75" onclick="play( {{this.id}} )">
 		  {{/each}}`
 
 var chat=`{{#each messages}}
@@ -62,6 +62,11 @@ function userHandler(msg) {
 		html = hands_template(msg);
 		document.getElementById('player_hands').innerHTML = html;
 		break;
+	case 'update_board':
+		html=  '<img src="/images/cards/' + msg.image_url + '" alt="#" width="50" height="75">';
+		
+		document.getElementById('board').innerHTML = html;
+		break;
 	case 'update_chat':
 		html = chat_template(msg);
 		document.getElementById('messages').innerHTML = html;
@@ -90,6 +95,16 @@ function showCard(cardId) {
 
 function draw(){
 	var msg={action:"draw"};
+	socket.emit(GAMESERVER,msg);
+}
+
+function ready(){
+	var msg={action:"ready"};
+	socket.emit(GAMESERVER,msg);
+}
+
+function play(card_id){
+	var msg={action:"play", card_id:card_id};
 	socket.emit(GAMESERVER,msg);
 }
 

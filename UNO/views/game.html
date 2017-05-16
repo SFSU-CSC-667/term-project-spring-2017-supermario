@@ -72,7 +72,7 @@
           <h1>GAME {{game_id}}</h1><!--GAME ID HERE-->
         </div>
         <div class="col-md-2">
-          <a href="#" role="button" class="btn btn-success btn-lg btn-block">READY</a><!--ready function here, maybe can set to disappear after game starts?-->
+          <button class="btn btn-success btn-lg btn-block", onclick="ready()">READY</button><!--ready function here, maybe can set to disappear after game starts?-->
         </div>
       </div>
       <div class="row">      
@@ -99,7 +99,7 @@
         <div class="col-md-1">
           <p>direction image here</p><!--game direction image, code to invert image following the game direction-->
         </div>
-        <div class="col-md-6">
+        <div id="board" class="col-md-6">
           <h1>GAME TABLE HERE, DISCARD PILE</h1><!--Show top card of discard pile javascript here-->
         </div>
         <div class="col-md-1">
@@ -125,7 +125,7 @@
         <div id="player_hands" class="col-md-6">
           <h2>CARDS ON HAND HERE</h2><!--javascript to display cards on hand here-->
           {{#each hands}}
-		  <img src="/images/cards/{{this.image_url}}" alt="#" width="150" height="150" onclick="play_hand('{{this.id}}')">
+		  <img src="/images/cards/{{this.image_url}}" alt="#" width="50" height="75" onclick="play('{{this.id}}')">
 		  {{/each}}
         </div>
         <div class="col-md-2 col-md-offset-2">
