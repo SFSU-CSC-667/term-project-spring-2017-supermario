@@ -1,7 +1,5 @@
 const socketIo = require('socket.io');
-const outPackage = require('../game');
-
-const GAMESERVER = 'game server';
+const eventHandler = require('../game');
 
 const socketServer = (app, server) => {
   const io = socketIo(server);
@@ -19,11 +17,13 @@ const socketServer = (app, server) => {
         socket.emit('chat message', msg);
       });
 
-      socket.on(GAMESERVER, function(msg) {
-        // next line is for testing use
-        console.log('server received ', JSON.stringify(msg));
-          socket.emit(GAMESERVER, outPackage(msg).player);
-          io.sockets.emit(GAMESERVER, outPackage(msg).group);
+      socket.on('game', function(msg) {
+        console.log('server received: ', msg)
+        eventHandler(msg, function(toPlayer, toGroup) {
+//          console.log('socket to player: ', toPlayer, ' to group: ', toGroup)
+          socket.emit('game', toPlayer);
+          io.emit('game', toGroup);
+        })
       });
   });
 }

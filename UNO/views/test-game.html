@@ -12,9 +12,9 @@
   <body>
     <h2>Test Game</h2>
     <div id="gameRoom">
+      <h4 onclick="showHandCards()">Click here to show cards in hand</h4>
+      <div id="handCards"></div>
       <div id="gameBorad">
-        Select game id<select id='selectGame'></select>​
-        Select user id<select id='selectUser'></select>​
         <p id="tosend"></p>
         <h3>Group info from server</h3>
         <p id="groupChannel"></p>
@@ -23,9 +23,9 @@
         <br>
         <img id="draw" class="card" src='images/cards/back.png' onmouseup="post('draw')"
              alt='card:back'>
-        <img id="card1" class="card" src='images/cards/back.png' ondragend="post(1)"
+        <img id="card" class="card" src='images/cards/back.png' ondragend="post(1)"
              onclick="post(1)" alt='card:any card'>
-        select a card<select id='selectCard' onselect='showCard(cardId)'></select>
+        Change the card<select id='selectCard'></select>
         <br><p id="ready" onclick="post('ready')">Click READY</p> 
         <p id="red" onclick="post('red')">Click RED</p>
         <p id="green" onclick="post('green')">Click GREEN</p>
