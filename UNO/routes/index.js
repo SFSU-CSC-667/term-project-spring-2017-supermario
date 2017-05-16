@@ -4,6 +4,7 @@ const passport = require('../authentication/passport');
 var db=require('../database/db');
 //var bcrypt = require('bcrypt');
 const Users = require('../models/users')
+const Avatars = require('../models/avatars')
 const Games = require('../models/games')
 const Players = require('../models/players')
 const saltRounds = 10;
@@ -42,7 +43,11 @@ router.post('/signup', (req, res, next) => {
 });
 
 router.get('/signup', function(req, res, next) {
-	res.render('signup_form', { title: 'Sign Up' });
+	Avatars.findAll().then( ats => {
+		res.render('signup_form', { title: 'Sign Up' , avatars:ats});
+	}).catch(error => {
+		console.log(error);
+	})
 });
 
 

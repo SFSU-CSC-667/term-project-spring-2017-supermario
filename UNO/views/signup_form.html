@@ -19,13 +19,25 @@
                     <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
 		        </div>
                 <div class="form-group">
-                    <label for="email">Email address:</label>
+                    <label for="nick_name">Nick Name:</label>
                     <input type="text" class="form-control" id="nickname" placeholder="Enter email" name="nick_name">
 		        </div>
                 <div class="form-group">
                     <label for="pwd">Password:</label>
                     <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="password">
 		        </div>
+				<div class="form-group">
+					<label for="avatar">Avatar:</label>
+					{{#each avatars}}
+					{{this.id}}
+					<img src="/images/avatars/{{this.image_url}}" alt="#" class="img-circle" width="100" height="100">				
+					{{/each}}
+					<select id="avatars">
+					{{#each avatars}}
+					 <option value={{this.id}}>{{this.id}}</option>
+					{{/each}}
+					</select>
+				</div>
                 <button type="submit" class="btn btn-default">Submit</button>
 	        </form>                       
         </div>
