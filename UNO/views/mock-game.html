@@ -160,7 +160,7 @@
 			{{/each}}
 			</ul>
 	        <form action="">
-	          <input id="msg_form" autocomplete="off" /><button>Send</button>
+	          <input id="m" autocomplete="off" /><button>Send</button>
 	        </form>
 	        <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
 	        <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
@@ -168,9 +168,9 @@
 	          $(function () {
 	            var socket = io();
 	            $('form').submit(function(){
-			 	 	var msg={action:"send_chat", message: $('#msg_form').val(), email: '{{email}}', game_id: {{game_id}} }
+			 	 	var msg={action:"send_chat", message: $('#m').val(), email: '{{email}}', game_id: 0}
 	         	    socket.emit('mock game server', msg);
-	              	$('#msg_form').val('');
+	              	$('#m').val('');
 	              	return false;
 	            });
 	          });

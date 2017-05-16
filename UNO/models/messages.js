@@ -3,19 +3,23 @@ Models=require('./models');
 Users=require('./users');
 class Messages extends Models{
 	
-	static listByGameId(id){
+	static listMsgByGameId(id){
 		return new Promise(function(fulfill, reject){
 				db.manyOrNone("select * from messages where game_id = $1 order by id ASC limit 50", id).then( msgs => {
 						var iterMsg=0;
-						msgs.forEach(msg => {
-							Users.findById(msg.user_id).then( user => {
-								msg.nick_name=user.nick_name;
-								iterMsg++;
-								if (iterMsg === msgs.length) {
-									fulfill(msgs);
-								}
+						if (msgs.length === 0){
+							fulfill(msgs);
+						} else {
+							msgs.forEach(msg => {
+								Users.findById(msg.user_id).then( user => {
+									msg.nick_name=user.nick_name;
+									iterMsg++;
+									if (iterMsg === msgs.length) {
+										fulfill(msgs);
+									}
+								});
 							});
-						});
+						}
 				}).catch(error => {
 					reject(error);
 				});
@@ -23,7 +27,7 @@ class Messages extends Models{
 	}
 	
 	static listLobbyMsg(){
-		return Messages.listByGameId(0);
+		return Messages.listMsgByGameId(0);
 	}
 
 	static findByEmail(str){

@@ -12,7 +12,14 @@ var cards={}, players={}, myInfo, whoStart, roundEnd, gameEnd;
 var hands=`{{#each hands}}
 		  <img src="/images/cards/{{this.image_url}}" alt="#" width="150" height="150" onclick="play_hand('{{this.id}}')">
 		  {{/each}}`
+
+var chat=`{{#each messages}}
+		<li>{{this.nick_name}}: {{this.message}}   {{this.post_time}}</li>
+		{{/each}}`;
+
 var hands_template=Handlebars.compile(hands);
+var chat_template=Handlebars.compile(chat);
+
 $(function () {
   /* chat room needed to be solved chat channel */
   $('form').submit(function(){
@@ -54,6 +61,11 @@ function userHandler(msg) {
 	case 'update_hands':
 		html = hands_template(msg);
 		document.getElementById('player_hands').innerHTML = html;
+		break;
+	case 'update_chat':
+		html = chat_template(msg);
+		document.getElementById('messages').innerHTML = html;
+	    window.scrollTo(0, document.body.scrollHeight);
 		break;
 	case 'update':
 		break;

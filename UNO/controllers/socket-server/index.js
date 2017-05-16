@@ -44,7 +44,6 @@ const socketServer = (app, server) => {
         // next line is for testing use
         console.log('server received ', JSON.stringify(msg));
 		  mockGameController(msg).then(ret => {	
-			console.log(ret.group.games);
           	socket.emit(mockGAMESERVER, ret.player);
           	io.sockets.emit(mockGAMESERVER, ret.group);
 		  }).catch( error => {
