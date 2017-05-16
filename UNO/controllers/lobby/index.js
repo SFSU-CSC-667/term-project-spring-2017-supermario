@@ -1,9 +1,7 @@
-const socketIo = require('socket.io');
-const db = require('../../database/game');
 const Users=require('../../models/users');
 const Games=require('../../models/games');
 const Players=require('../../models/players');
-const socketServer=require('../socket-server');
+const Messages=require('../../models/messages');
 const MaxPlayer = 4;
 
 function lobby(msg) {
@@ -76,6 +74,22 @@ return new Promise( function(fulfill, reject){
 			reject(error);
 		});
 
+		break;
+	case "send_chat":
+			
+		Users.findByEmail(msg.email).then( user => {
+			Messages.create({game_id:msg.game_id, user_id:user.id, message: msg.message}).then( success => {
+				Messages.listLobbyMsg().then( msgs => {
+					console.log(msgs);
+					var toPlayer = {messages: msgs, action: "update_chat"};
+					var toGroup = {messages: msgs, action: "update_chat"};
+					fulfill({player:toPlayer, group:toGroup});
+				});
+			});
+		}).catch(error => {
+			console.log(error);
+			reject(error);
+		});
 		break;
 	}
 	});

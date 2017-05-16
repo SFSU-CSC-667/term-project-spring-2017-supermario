@@ -4,7 +4,9 @@ const passport = require('../authentication/passport');
 var db=require('../database/db');
 //var bcrypt = require('bcrypt');
 const Users = require('../models/users')
+const Avatars = require('../models/avatars')
 const Games = require('../models/games')
+const Messages = require('../models/messages')
 const Players = require('../models/players')
 const saltRounds = 10;
 
@@ -42,7 +44,11 @@ router.post('/signup', (req, res, next) => {
 });
 
 router.get('/signup', function(req, res, next) {
-	res.render('signup_form', { title: 'Sign Up' });
+	Avatars.findAll().then( ats => {
+		res.render('signup_form', { title: 'Sign Up' , avatars:ats});
+	}).catch(error => {
+		console.log(error);
+	})
 });
 
 
@@ -68,7 +74,9 @@ router.get('/login', function(req, res, next) {
 router.get('/lobby', function(req, res, next) { // This function is called when receive request " GET /lobby "
 	if (req.isAuthenticated()){
 		Games.listJoinables().then( games=> {
-			res.render('lobby', { auth_stat: 'Authenticated', email: req.user.email, games: games, user: req.user});
+			Messages.listLobbyMsg().then( msgs => {
+			res.render('lobby', { auth_stat: 'Authenticated', email: req.user.email, games: games, user: req.user, messages:msgs});
+			});
 		}).catch( error => {
 			games={};
 			console.log(error);

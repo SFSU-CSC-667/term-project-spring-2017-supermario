@@ -109,7 +109,11 @@
 	      #messages li:nth-child(odd) { background: #eee; }
 	      #messages { margin-bottom: 0px }
 	    </style>
-	    <ul id="messages"></ul>
+	    <ul id="messages">	
+		{{#each messages}}
+		<li>{{this.nick_name}}: {{this.message}}   {{this.post_time}}</li>
+		{{/each}}
+		</ul>
 	    <form action="">
 	      <input id="m" autocomplete="off" /><button>Send</button>
 	    </form>
@@ -119,18 +123,13 @@
 	      $(function () {
 	        var socket = io();
 	        $('form').submit(function(){
-	          socket.emit('chat message', $('#m').val());
+			  var msg={action:"send_chat", message: $('#m').val(), email: '{{email}}', game_id: 0}
+	          socket.emit('lobby server', msg);
 	          $('#m').val('');
 	          return false;
 	        });
-	        socket.on('chat message', function(msg){
-	          $('#messages').append($('<li>').text(msg));
-	          window.scrollTo(0, document.body.scrollHeight);
-	        });
 	      });
 	    </script>
-
-
 		</div>
 	</div>
 </div>

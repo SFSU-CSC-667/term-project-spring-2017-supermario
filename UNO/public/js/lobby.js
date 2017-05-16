@@ -3,6 +3,7 @@ const socket = io();
 $(function () {
 
   var gamelist_template=Handlebars.compile(gamelist);
+  var chat_template=Handlebars.compile(chat);
   
   socket.on('lobby server', function(msg) {
 	
@@ -15,6 +16,11 @@ $(function () {
 			break;
 		case "enter_gameroom":
 			window.location.href ="/game/"+msg.game_id
+			break;
+		case "update_chat":
+			html = chat_template(msg);
+			document.getElementById("messages").innerHTML = html;
+	        window.scrollTo(0, document.body.scrollHeight);
 			break;
 	}
   });	
@@ -62,6 +68,11 @@ var gamelist =	`{{#each games}}
 				</div>
 			</div>
 			{{/each}}`;
+
+
+var chat=`{{#each messages}}
+		<li>{{this.nick_name}}: {{this.message}}   {{this.post_time}}</li>
+		{{/each}}`;
 /*
 var game_list=
 			'{{#each games}}'
