@@ -1,16 +1,37 @@
+const access = require('../../models/game/access')
+const update = require('../../models/game/update')
+
+const DEALT_CARDS = 7
+
 /* function starts the game when all players are ready */
-const firstDealt = 7
+const start = (msg) => {
+  var numOfCards, array, topDiscard
 
-const start = (msg, numOfCards, gameCards, gamePlayers, thisGame) => {
-  console.log('starting game... under developing')
-  var array = oneArray(numOfCards)
-  // shuffle pile twice
-  shuffle(array)
-  shuffle(array)
+  access.cards().then(result => {
+    numOfCards = result.length
+  })
+  .then( () => {
+    array = oneArray(numOfCards)
 
-  newPile(msg, array, gameCards)
-  dealtCards(msg, gameCards, thisGame)
-}
+    shuffle(array)
+    shuffle(array)
+  
+    return update.deleteOldGameCards(msg.game_id)
+  })
+  .then( () => {
+    promises = [];
+    array.forEach((el, index) => {
+      promises.push(update.newGameCards(msg.game_id, el, null, index))
+    });
+    return Promise.all(promises)
+  })
+  .then( () => {
+    dealtCards(msg)
+  })
+  .catch( e => {
+    console.log(e)
+  })
+} // end of start
 
 function oneArray(numOfCards) {
   var i, arr = []
@@ -20,37 +41,43 @@ function oneArray(numOfCards) {
   return arr
 }
 
-function newPile(msg, array, gameCards) {
-  var i
-  if (gameCards.length === 0) {
-    for (i = 0; i < array.length; i++) {
-      gameCards.push({"game_id": msg.game_id, "card_id": array[i]
-         , "user_id": null, "pile_order": i })
-    }
-  } else {
-    for (i = 0; i < array.length; i++) {
-      gameCards[i].game_id = msg.game_id
-      gameCards[i].user_id = null
-      gameCards[i].card_id = array[i]
-      gameCards[i].pile_order = i
-    }
-  }
-}
+function dealtCards(msg) {
+  var game_players, game_cards, topOrder
 
-function dealtCards(msg, gameCards, gamePlayers, thisGame) {
-  var i, j, k
-  j = 0
-  k = firstDealt * gamePlayers.length
-  gamePlayers.array.forEach(function(element) {
-    for (i = j; i < k; i += firstDealt) {
-      gameCards[i].user_id = element.user_id
-      gameCards[i].pile_order = null
-    }
-    j++
+  access.thisGamePlayers(msg.game_id)
+  .then( data => {
+    game_players = data
+    topOrder = DEALT_CARDS * game_players.length
+
+    var i, j = 0
+    game_players.forEach( element => {
+      for (i = 0; i < DEALT_CARDS; i++ ) {
+        var userId = element.user_id
+        var pileOrder = i+j
+        update.dealtGameCards(userId, msg.game_id, pileOrder)
+        .then( () => {
+        })
+        .catch( Error => {
+          console.log(Error)
+        })
+      }
+      j += DEALT_CARDS
+    })
   })
-  gameCards[k].pile_order = null
-  thisGame.top_discard = gameCards[k].card_id
-}
+  .then( () => {
+    return access.getPileCardId(msg.game_id, topOrder)
+  })
+  .then( result => {
+    return update.startGame(++topOrder, result.card_id, msg.game_id)
+  })
+  .then( result => {
+    return update.dealtGameCards(null, msg.game_id, --topOrder)
+  })
+  .catch(Error => {
+    console.log(Error)
+  })
+
+} // end of dealtCards
 
 function shuffle(arr) {
   var i, j, k, temp

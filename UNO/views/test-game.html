@@ -68,10 +68,10 @@
     <div class="col-md-8">
       <div class="row">
         <div class="col-md-10">
-          <h1>GAME ###</h1><!--GAME ID HERE-->
+          <h1>GAME <span id="gameNumber"></span></h1><!--GAME ID HERE-->
         </div>
         <div class="col-md-2">
-          <a href="#" role="button" class="btn btn-success btn-lg btn-block">READY</a><!--ready function here, maybe can set to disappear after game starts?-->
+          <a href="#" role="button" class="btn btn-success btn-lg btn-block" onclick="post('ready')">READY</a><!--ready function here, maybe can set to disappear after game starts?-->
         </div>
       </div>
       <div class="row">      
@@ -123,11 +123,12 @@
         </div>
         <div class="col-md-6">
           <h2>CARDS ON HAND HERE</h2><!--javascript to display cards on hand here-->
+          <div id="handCards"></div>
         </div>
         <div class="col-md-2 col-md-offset-2">
-          <button class="btn btn-default btn-lg btn-block">PASS</button><!--Skip turn function here-->
-          <button class="btn btn-warning btn-lg btn-block">DRAW A CARD</button><!--draw a card function here-->
-          <button class="btn btn-danger btn-lg btn-block">UNO</button><!--Call UNO! function here-->
+          <button class="btn btn-default btn-lg btn-block" onclick="post('pass')">PASS</button><!--Skip turn function here-->
+          <button class="btn btn-warning btn-lg btn-block" onclick="post('draw')">DRAW A CARD</button><!--draw a card function here-->
+          <button class="btn btn-danger btn-lg btn-block" onclick="post('uno')">UNO</button><!--Call UNO! function here-->
         </div>
       </div>
       <!--End of current player dashboard-->  

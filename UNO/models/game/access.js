@@ -12,11 +12,18 @@ const CARDS_IN_HAND = `SELECT card_id
                        AND user_id = $2
                        ORDER BY card_id`
 
-const CARDS_IN_PLAYERS = `SELECT user_id, COUNT(*) AS cardCount
+const CARDS_IN_PLAYERS = `SELECT user_id, COUNT(user_id) AS cardCount
                           FROM Game_Cards
+                          WHERE game_id = $1
+                          AND user_id IS NOT NULL
                           GROUP BY user_id`                       
 
-const GAME_CARDS = `SELECT * FROM Game_cards
+const GET_PILE_CARDID = `SELECT card_id
+                         FROM Game_Cards
+                         WHERE game_id = $1
+                         AND pile_order = $2`                          
+
+const GAME_CARDS = `SELECT * FROM Game_Cards
                     WHERE game_id = $1` 
 
 const PLAYERS_TO_GROUP = `SELECT GC.user_id, U.nick_name, U.user_score, P.score
@@ -26,6 +33,7 @@ const PLAYERS_TO_GROUP = `SELECT GC.user_id, U.nick_name, U.user_score, P.score
                           AND U.avatar_id = A.id
                           AND P.game_id = GC.game_id
                           AND GC.game_id = $1
+                          AND GC.user_id <> null
                           ORDER BY P.seat_number`
 
 
@@ -48,13 +56,14 @@ module.exports = {
   cards: () => db.any(CARDS),
   cardIds: () => db.any(CARD_IDS),
 
-  gameCards: (game_id) => db.any(GAME_CARDS, [game_id]),
-  thisGamePlayers: (game_id) => db.any(THISGAME_PLAYERS, [game_id]),
+  gameCards: (game_id) => db.any(GAME_CARDS, game_id),
+  getPileCardId: (game_id, pile_order) => db.oneOrNone(GET_PILE_CARDID, [game_id, pile_order]),
+  thisGamePlayers: (game_id) => db.any(THISGAME_PLAYERS, game_id),
   thisPlayer: (game_id, user_id) => db.any(THIS_PLAYER, [game_id, user_id]),
-  thisGame: (game_id) => db.any(THIS_GAME, [game_id]),
+  thisGame: (game_id) => db.any(THIS_GAME, game_id),
 
   // for send to client(s)
   cardsInHand: (game_id, user_id) => db.any(CARDS_IN_HAND, [game_id, user_id]),
-  playersToGroup: (game_id) => db.any(PLAYERS_TO_GROUP, [game_id]),
-  cardsInPlayers: (game_id) => db.any(CARDS_IN_PLAYERS, [game_id])
+  playersToGroup: (game_id) => db.any(PLAYERS_TO_GROUP, game_id),
+  cardsInPlayers: (game_id) => db.any(CARDS_IN_PLAYERS, game_id)
 }

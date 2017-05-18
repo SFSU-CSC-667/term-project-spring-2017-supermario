@@ -1,8 +1,8 @@
 
 const socket = io();
 
-var gameId = 5;
-var userId = 10;
+var gameId = 1;
+var userId = 3;
 var cardId = 0;
 var gameState = 0;
 var cards = {};
@@ -31,6 +31,8 @@ socket.on('game', function(msg) {
 $(function () {
   init()
 
+
+  document.getElementById("gameNumber").innerHTML = gameId
   /* chat room needed to be solved chat channel */
   $('form').submit(function(){
     socket.emit('chat message', $('#m').val());
@@ -44,11 +46,12 @@ $(function () {
   });
   
   socket.on('game', function(msg) {
-    console.log(JSON.stringify(msg))
     if (msg.hasOwnProperty("user_id") && msg.user_id === userId) {
       userHandler(msg)
+         console.log('\nfrom server: ', JSON.stringify(msg))
     } else if (msg.hasOwnProperty("group") && msg.group === gameId) {
       groupHandler(msg)
+         console.log('\nfrom server: ', JSON.stringify(msg))
     }
   })
 
@@ -58,13 +61,12 @@ $(function () {
   for (i=0; i<108; i++) {
     select += `<option value=${i}>${i}</option>`
   }
-  document.getElementById("selectCard").innerHTML = select
+//  document.getElementById("selectCard").innerHTML = select
   
   var st = $('#selectCard')
 
   st.change(function() {
     cardId = $(this).val()
-    console.log('card image = ', cards[cardId].image_url)
     document.getElementById('card').src='images/cards/' + cards[cardId].image_url;
   })
   
@@ -80,6 +82,9 @@ function userHandler(msg) {
     case 'pickColor':
       result = 'pick a color';
       break;
+    case 'refresh':
+      result = 'refresh';
+      break;
     case 'init':
       result = 'init'
       cards = msg.cardsTable;
@@ -90,20 +95,25 @@ function userHandler(msg) {
     default:
       result = 'no matched order';
   }
+  // following for test use only
   console.log('client result: ', result)
-  document.getElementById('userChannel').innerHTML = JSON.stringify(msg);
+  //  document.getElementById('userChannel').innerHTML = JSON.stringify(msg);
+  if( cards !== {}) showHandCards()
 }
 
 function groupHandler(msg) {
   if (msg.refresh === 'refresh') {
     // send refresh request to server
+    post('refresh')
   }
-  document.getElementById('groupChannel').innerHTML = JSON.stringify(msg);
+//  document.getElementById('groupChannel').innerHTML = JSON.stringify(msg);
 }
 
-function post(wd) {
-  document.getElementById("tosend").innerHTML = "To send: " + wd;
-  toServer.word = wd
+/* respond to play action */
+function post(word) {
+//  pars play action
+
+  toServer.word = word
   sendOut(toServer);
 }
 
@@ -118,14 +128,13 @@ function init() {
 
 
 function showHandCards() {
-  var cardsInhand = [3, 10, 30, 50, 89, 103]
-  var x = 0, image = '', oneCard
+  var cardsInhand = [3, 10, 44, 46, 48, 50, 89, 106]
+  var x = 0, image = '', oneCard = ''
   cardsInhand.forEach(a => {
     oneCard = 'images/cards/' + cards[a].image_url
     image += `<img class="card" src="${oneCard}" ondragend="post(${a})"
                 onclick="post(${a})" alt='card_id: ${a}'> `
     x += 15
   })
-  console.log(image)
   document.getElementById('handCards').innerHTML = image
 }
