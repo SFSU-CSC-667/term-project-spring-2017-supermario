@@ -16,7 +16,12 @@ const CARDS_IN_PLAYERS = `SELECT user_id, COUNT(*) AS cardCount
                           FROM Game_Cards
                           GROUP BY user_id`                       
 
-const GAME_CARDS = `SELECT * FROM Game_cards
+const GET_PILE_CARDID = `SELECT card_id
+                         FROM Game_Cards
+                         WHERE game_id = $1
+                         AND pile_order = $2`                          
+
+const GAME_CARDS = `SELECT * FROM Game_Cards
                     WHERE game_id = $1` 
 
 const PLAYERS_TO_GROUP = `SELECT GC.user_id, U.nick_name, U.user_score, P.score
@@ -48,13 +53,14 @@ module.exports = {
   cards: () => db.any(CARDS),
   cardIds: () => db.any(CARD_IDS),
 
-  gameCards: (game_id) => db.any(GAME_CARDS, [game_id]),
-  thisGamePlayers: (game_id) => db.any(THISGAME_PLAYERS, [game_id]),
+  gameCards: (game_id) => db.any(GAME_CARDS, game_id),
+  getPileCardId: (game_id, pile_order) => db.oneOrNone(GET_PILE_CARDID, [game_id, pile_order]),
+  thisGamePlayers: (game_id) => db.any(THISGAME_PLAYERS, game_id),
   thisPlayer: (game_id, user_id) => db.any(THIS_PLAYER, [game_id, user_id]),
-  thisGame: (game_id) => db.any(THIS_GAME, [game_id]),
+  thisGame: (game_id) => db.any(THIS_GAME, game_id),
 
   // for send to client(s)
   cardsInHand: (game_id, user_id) => db.any(CARDS_IN_HAND, [game_id, user_id]),
-  playersToGroup: (game_id) => db.any(PLAYERS_TO_GROUP, [game_id]),
-  cardsInPlayers: (game_id) => db.any(CARDS_IN_PLAYERS, [game_id])
+  playersToGroup: (game_id) => db.any(PLAYERS_TO_GROUP, game_id),
+  cardsInPlayers: (game_id) => db.any(CARDS_IN_PLAYERS, game_id)
 }

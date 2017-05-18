@@ -1,18 +1,26 @@
-/* function mark the player ready state and return if all players are ready */
+const update = require('../../models/game/update')
+const access = require('../../models/game/access')
+/* set the player ready to play and check if all players are ready */
 
-const ready = (msg, gamePlayers) => {
+const ready = (msg) => {
   var allReady =  true
   var players = 0
-  if (gamePlayers.length === 0)
-    return false
-  gamePlayers.array.forEach(function(element) {
-    players++
-                             console.log('element', element) // debug use only
-    if (element.user_id === msg.user_id) {
-      element.ready_play =  true
-    }
 
-    allReady = (element.ready_play && allReady) ?  true : false  
+  update.setReady(true, msg.game_id, msg.user_id)
+  .then( r => {
+    console.log('set ready ok', r)
+    return access.thisGamePlayers(msg.game_id)
+  })
+  .then(result => {
+    result.forEach(element => {
+      players++
+      if (element.ready_play === false) {
+        allReady = false
+      }
+    })
+  })
+  .catch(e => {
+    console.log(e)
   })
   
   return allReady && players > 1

@@ -1,29 +1,44 @@
 const db = require('../../database/db')
 
-const upd = 'update'
-/*
-const 
+const SET_READY = `UPDATE Players
+                   SET ready_play = $1
+                   WHERE game_id = $2
+                   AND user_id = $3`
 
-const 
+const NEW_GAME_CARDS =  `INSERT INTO Game_Cards
+                          (game_id, card_id, user_id, pile_order)
+                        VALUES
+                          ($1,$2,$3,$4)`
 
-const 
+const DELETE_OLD_GAME_CARDS = `DELETE FROM Game_Cards
+                               WHERE game_id = $1`
 
-const                        
+const DEALT_GAME_CARDS = `UPDATE Game_Cards
+                          SET user_id = $1, pile_order = null
+                          WHERE game_id = $2
+                          AND pile_order = $3`
 
-const                        
+const SET_PILE_ORDER_NULL = `UPDATE Game_Cards
+                             SET pile_order = null
+                             WHERE game_id = $1
+                             AND pile_order = $2`
 
-const 
+const START_GAME = `UPDATE Games
+                     SET next_order = $1,
+                         top_discard = $2,
+                         joinable = false
+                     WHERE id = $3`                                                                                      
 
-*/
+module.exports = {
+  dealtGameCards: (user_id, game_id, pile_order) => db.none(DEALT_GAME_CARDS, [user_id, game_id, pile_order]),
 
-module.exports = upd
-/*
-  cards: () => db.any(CARDS),
-  cardId: () => db.any(CARD_ID),
-  cardsInHand: (game_id, player_id) => db.any(CARDS_IN_HAND),
-  gameState: (game_id) => db.one(GAME_STATE),
-  players: (game_id) => db.any(PLAYERS),
-  thisGame: (game_id) => db.any(THIS_GAME)
+  deleteOldGameCards: (game_id) => db.none(DELETE_OLD_GAME_CARDS, game_id),
+
+  newGameCards: (game_id, card_id, user_id, pile_order) => db.none(NEW_GAME_CARDS, [game_id, card_id, user_id, pile_order]),
+
+  setPileOrderNull: (game_id, pile_order) => db.none(SET_PILE_ORDER_NULL, [game_id, pile_order]),
+
+  setReady: (ready, game_id, user_id) => db.none(SET_READY, [ready, game_id, user_id]),
+
+  startGame: (next_order, top_discard, id) => db.none(START_GAME, [next_order, top_discard, id])
 }
-
-*/

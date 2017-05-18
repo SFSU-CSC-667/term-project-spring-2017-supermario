@@ -3,68 +3,33 @@ const update = require('../../models/game/update.js')
 const ready = require('./ready')
 const start = require('./start')
 const initClient = require('./init-client')
+const draw = require('./draw')
+const pass = require('./pass')
+const pickedColor = require('./picked-color')
+const uno = require('./uno')
+const userExit = require('./user-exit')
+const playCards = require('./play-cards')
 
 /*
  * Content of object from client:
  * msg: { word:<action>, game_state:integer, game_id:integer, user_id:integer }
  * Content of objects send to client:
  * toPlayer: { order:string, user_id:integer, game_state:integer, handCards:array }
- * toGroup: { group:<game_id>, game_state:integer, players:array, game:array }
+ * toGroup: { group:<game_id>, refresh:string game_state:integer, players:array, game:array }
  */
 const TO_PLAYER = { order:{}, user_id:{}, game_state:{}, handCards:{} }
 const TO_GROUP = { group:{}, refresh:{}, game_state:{}, players:{}, game:{}, cardsInPlayers:{} }
-var thisGame, thisPlayer, gamePlayers, gameCards, toPlayer, toGroup
-var cards, avatars // should read only after they are assigned
-var cardPiles = {}  // object format: { ${game_id}: [card_id1, card_id2, ...], ...}
-var numOfCards
-
-init()
-
-function init() {
-  access.cards()
-  .then( data => {
-    cards = data
-    numOfCards = cards.length
-    return access.cardIds()
-  })
-  .catch ( e => {
-    console.log( 'read cards table error', e)
-  })
-}
 
 const eventHandler = (msg, callback) => {
-  toPlayer = Object.assign({}, TO_PLAYER)
-  toGroup = Object.assign({}, TO_GROUP)
+  var toPlayer = Object.assign({}, TO_PLAYER)
+  var toGroup = Object.assign({}, TO_GROUP)
 
-  // read tables of this game from database
-  access.thisGame(msg.game_id).then( data => {
-    thisGame = data
-    console.log(thisGame)
-    return access.thisPlayer(msg.game_id, msg.user_id);
-  })
-  .then( data => {
-    thisPlayer = data;
-    console.log('this player ', thisPlayer);
-    return access.gameCards(msg.game_id)
-  })
-  .then( data => {
-    gameCards = data
-    return access.thisGamePlayers(msg.game_id)
-  })
-  .then( data => {
-    gamePlayers = data
-console.log('gamePlayers: ', gamePlayers)
-    
-    handleEvent(msg)
-  })
-
-  // update tables according to changes here
-
+  toPlayer.user_id = msg.user_id
+  toGroup.group = msg.game_id
+  handleEvent(msg, toPlayer, toGroup)
 
   // read data from the updated tables and assemble send out packages
-  .then( data => {
-    return access.cardsInHand(msg.game_id, msg.user_id)
-  })
+  access.cardsInHand(msg.game_id, msg.user_id)
   .then( data => {
     toPlayer.handCards = data
     return access.thisGame(msg.game_id)
@@ -81,7 +46,7 @@ console.log('gamePlayers: ', gamePlayers)
     toGroup.cardsInPlayers = data
   })
   .then( data => {
-    packOutPackage(msg)
+    packOutPackage(msg, toPlayer, toGroup)
     callback(toPlayer, toGroup)
   })
   .catch( e => {
@@ -91,49 +56,52 @@ console.log('gamePlayers: ', gamePlayers)
 } // end of eventHandler
 
 
-function handleEvent(msg) {
+function handleEvent(msg, toPlayer, toGroup) {
   const word = msg.word
   console.log(word)
   if (typeof word === 'number') {
+    playCards(msg)
     result = 'get number'
   }
   switch (word) {
     case 'draw':
-      asDraw()
+      draw(msg)
       result = 'get draw'
       break
     case 'refresh':
-      asDraw()
-      result = 'get refresh'
+      result = 'auto refresh'
       break
-    case 'skip':
-      asSkip()
-      result = 'get skip'
+    case 'pass':
+      pass(msg)
+      result = 'get pass'
       break
     case 'ready':
-      result = ready(msg, gamePlayers)
+      result = ready(msg)  // if ready, then start game
+                      start(msg) // for test with out players are really ready
       if (result) {
-        start(msg, numOfCards, gameCards, gamePlayers, thisGame)
+        start(msg)
+      } else {
+        result = 'not ready to start'
       }
       break
     case 'red':
     case 'green':
     case 'blue':
     case 'yellow':
-      asPickedColor(word)
+      pickedColor(msg)
       result = 'get ' + word
       break
     case 'uno':
-      asUno()
+      uno(msg)
       result = 'get uno'
       break
     case 'init':
       result = 'get init'
-      initClient(toPlayer, cards)
+      initClient(toPlayer)
       break
     case 'exit':
       result = 'get exit'
-      asExit()
+      exit(msg)
       break
     default:
       result = 'no matched word'
@@ -161,41 +129,39 @@ const wordMapOrder = word => {
   return result
 }
 
-function packOutPackage(msg) {
+function setRefreshFlag(word) {
+  var result
+  switch (word) {
+    case 'ready':
+    case 23:
+    case 24:
+    case 48:
+    case 49:
+    case 73:
+    case 74:
+    case 98:
+    case 99:
+    case 104:
+    case 105:
+    case 106:
+    case 107:
+      result = 'refresh'
+      break
+    default:
+      result = {}
+  }
+  return result
+}
+
+function packOutPackage(msg, toPlayer, toGroup) {
   toPlayer.user_id = msg.user_id
   toPlayer.order = wordMapOrder(msg.word)
-  toPlayer.refresh = wordMapOrder(msg.word)
+  toGroup.refresh = setRefreshFlag(msg.word)
   toGroup.group = msg.game_id
   if (toGroup.game.length > 0) {
     toGroup.game_state = toGroup.game[0].game_state
     toPlayer.game_state = toGroup.game[0].game_state
   }
-}
-
-
-function asDraw() {
-  console.log('do Draw under develop')
-}
-
-function asSkip() {
-  console.log('do Skip under develop')
-}
-
-function asReady() {
-  console.log('do Read under develop')
-  console.log('this game within asReady()', thisGame)
-}
-
-function asPickedColor(word) {
-  console.log('picked color under develop')
-}
-
-function asUno() {
-  console.log('do Uno under develop')
-}
-
-function asExit() {
-  console.log('do Exit under develop')
 }
 
 function isValidAction() {
