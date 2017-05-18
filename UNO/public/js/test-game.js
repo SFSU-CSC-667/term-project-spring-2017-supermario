@@ -98,7 +98,7 @@ function userHandler(msg) {
   // following for test use only
   console.log('client result: ', result)
   //  document.getElementById('userChannel').innerHTML = JSON.stringify(msg);
-  if( cards !== {}) showHandCards()
+  if( cards !== {}) showHandCards(msg.handCards)
 }
 
 function groupHandler(msg) {
@@ -127,14 +127,19 @@ function init() {
 }
 
 
-function showHandCards() {
-  var cardsInhand = [3, 10, 44, 46, 48, 50, 89, 106]
+function showHandCards(handCards) {
+  var cardsInhand = handCards
   var x = 0, image = '', oneCard = ''
-  cardsInhand.forEach(a => {
-    oneCard = 'images/cards/' + cards[a].image_url
-    image += `<img class="card" src="${oneCard}" ondragend="post(${a})"
-                onclick="post(${a})" alt='card_id: ${a}'> `
+  cardsInhand.forEach(element => {
+    cardId = element.card_id
+    oneCard = 'images/cards/' + cards[cardId].image_url
+    image += `<img class="card" src="${oneCard}" ondragend="post(${cardId})"
+                onclick="post(${cardId})" alt='card_id: ${cardId}'> `
     x += 15
   })
   document.getElementById('handCards').innerHTML = image
+}
+
+function showPlayers() {
+  
 }

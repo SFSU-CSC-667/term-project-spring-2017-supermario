@@ -5,7 +5,7 @@ const DEALT_CARDS = 7
 
 /* function starts the game when all players are ready */
 const start = (msg) => {
-  var numOfCards, array, topDiscard
+  var numOfCards, array, game_players, game_cards, topOrder
 
   access.cards().then(result => {
     numOfCards = result.length
@@ -20,14 +20,46 @@ const start = (msg) => {
   })
   .then( () => {
     promises = [];
-    array.forEach((el, index) => {
-      promises.push(update.newGameCards(msg.game_id, el, null, index))
+    array.forEach((element, index) => {
+      promises.push(update.newGameCards(msg.game_id, element, null, index))
     });
     return Promise.all(promises)
   })
   .then( () => {
-    dealtCards(msg)
+//    var game_players, game_cards, topOrder
+
+    return access.thisGamePlayers(msg.game_id)
   })
+  .then( data => {
+    game_players = data
+    topOrder = DEALT_CARDS * game_players.length
+
+    var i, j = 0
+    game_players.forEach( element => {
+      for (i = 0; i < DEALT_CARDS; i++ ) {
+        var userId = element.user_id
+        var pileOrder = i+j
+        update.dealtGameCards(userId, msg.game_id, pileOrder)
+        .then( () => {
+        })
+        .catch( Error => {
+          console.log(Error)
+        })
+      }
+      j += DEALT_CARDS
+    })
+  })
+  .then( () => {
+    return access.getPileCardId(msg.game_id, topOrder)
+  })
+  .then( result => {
+    return update.startGame(++topOrder, result.card_id, msg.game_id)
+  })
+  .then( result => {
+    return update.dealtGameCards(null, msg.game_id, --topOrder)
+  })
+//    dealtCards(msg)
+//  })
   .catch( e => {
     console.log(e)
   })
