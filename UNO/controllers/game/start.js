@@ -5,7 +5,7 @@ const DEALT_CARDS = 7
 
 /* function starts the game when all players are ready */
 const start = (msg) => {
-  var numOfCards, array, nextOrder, topDiscard
+  var numOfCards, array, topDiscard
 
   access.cards().then(result => {
     numOfCards = result.length
@@ -16,7 +16,7 @@ const start = (msg) => {
     shuffle(array)
     shuffle(array)
   
-    return newPile(msg, array)
+    return update.deleteOldGameCards(msg.game_id)
   })
   .then( () => {
     promises = [];
@@ -41,25 +41,6 @@ function oneArray(numOfCards) {
   return arr
 }
 
-function newPile(msg, array) {
-  return update.deleteOldGameCards(msg.game_id)
-  .then( e => {
-    // var i
-    // for (i = 0; i < array.length; i++) {
-    //   update.newGameCards(msg.game_id, array[i], null, i)
-    //   .then(e => {})
-    //   .catch (e => {
-    //     console.log(e)
-    //   }) 
-    // }
-
-
-  })
-  .catch (e => {
-    console.log(e)
-  })
-} // end of newPile
-
 function dealtCards(msg) {
   var game_players, game_cards, topOrder
 
@@ -73,7 +54,6 @@ function dealtCards(msg) {
       for (i = 0; i < DEALT_CARDS; i++ ) {
         var userId = element.user_id
         var pileOrder = i+j
- console.log('dealt game cards pile_order ', pileOrder, ' user id ', userId)
         update.dealtGameCards(userId, msg.game_id, pileOrder)
         .then( () => {
         })
@@ -85,18 +65,13 @@ function dealtCards(msg) {
     })
   })
   .then( () => {
-    return access.getPileCardId(msg.game_id, ++topOrder)
+    return access.getPileCardId(msg.game_id, topOrder)
   })
   .then( result => {
-
-// here has a bug needed to fix
-
-    var cardId = result.card_id
-    console.log('next order ', topOrder, ' result card id ', cardId)
-    return update.startGame(topOrder, cardId, msg.game_id)
+    return update.startGame(++topOrder, result.card_id, msg.game_id)
   })
   .then( result => {
-    return update.dealtGameCards(null, msg.game_id, topOrder)
+    return update.dealtGameCards(null, msg.game_id, --topOrder)
   })
   .catch(Error => {
     console.log(Error)

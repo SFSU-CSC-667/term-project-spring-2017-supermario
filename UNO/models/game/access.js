@@ -12,8 +12,10 @@ const CARDS_IN_HAND = `SELECT card_id
                        AND user_id = $2
                        ORDER BY card_id`
 
-const CARDS_IN_PLAYERS = `SELECT user_id, COUNT(*) AS cardCount
+const CARDS_IN_PLAYERS = `SELECT user_id, COUNT(user_id) AS cardCount
                           FROM Game_Cards
+                          WHERE game_id = $1
+                          AND user_id IS NOT NULL
                           GROUP BY user_id`                       
 
 const GET_PILE_CARDID = `SELECT card_id
@@ -31,6 +33,7 @@ const PLAYERS_TO_GROUP = `SELECT GC.user_id, U.nick_name, U.user_score, P.score
                           AND U.avatar_id = A.id
                           AND P.game_id = GC.game_id
                           AND GC.game_id = $1
+                          AND GC.user_id <> null
                           ORDER BY P.seat_number`
 
 

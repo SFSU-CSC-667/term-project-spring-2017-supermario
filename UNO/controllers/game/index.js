@@ -9,6 +9,7 @@ const pickedColor = require('./picked-color')
 const uno = require('./uno')
 const userExit = require('./user-exit')
 const playCards = require('./play-cards')
+const refreshClient = require('./refreshClient')
 
 /*
  * Content of object from client:
@@ -69,6 +70,7 @@ function handleEvent(msg, toPlayer, toGroup) {
       result = 'get draw'
       break
     case 'refresh':
+      refreshClient(msg)
       result = 'auto refresh'
       break
     case 'pass':
