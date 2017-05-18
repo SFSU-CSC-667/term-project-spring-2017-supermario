@@ -1,5 +1,4 @@
 const access = require('../../models/game/access.js')
-const update = require('../../models/game/update.js')
 const ready = require('./ready')
 const start = require('./start')
 const initClient = require('./init-client')
@@ -79,12 +78,12 @@ function handleEvent(msg, toPlayer, toGroup) {
       break
     case 'ready':
       result = ready(msg)  // if ready, then start game
-                      start(msg) // for test with out players are really ready
       if (result) {
         start(msg)
       } else {
         result = 'not ready to start'
       }
+                      start(msg) // for test with out players are really ready
       break
     case 'red':
     case 'green':
