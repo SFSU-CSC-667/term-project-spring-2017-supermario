@@ -1,8 +1,8 @@
 
 const socket = io();
 
-var gameId = 3;
-var userId = 1;
+var gameId = 1;
+var userId = 3;
 var cardId = 0;
 var gameState = 0;
 var cards = {};
@@ -30,7 +30,7 @@ socket.on('game', function(msg) {
 
 $(function () {
   init()
-  //document.getElementById("gameNumber").innerHTML = gameId
+  document.getElementById("gameNumber").innerHTML = gameId
 
   /* chat room needed to be solved chat channel */
   $('form').submit(function(){
