@@ -19,15 +19,13 @@ const start = (msg) => {
     return update.deleteOldGameCards(msg.game_id)
   })
   .then( () => {
-    promises = [];
+    var promises = [];
     array.forEach((element, index) => {
       promises.push(update.newGameCards(msg.game_id, element, null, index))
     });
     return Promise.all(promises)
   })
   .then( () => {
-//    var game_players, game_cards, topOrder
-
     return access.thisGamePlayers(msg.game_id)
   })
   .then( data => {
@@ -35,19 +33,16 @@ const start = (msg) => {
     topOrder = DEALT_CARDS * game_players.length
 
     var i, j = 0
+    var promises = []
     game_players.forEach( element => {
       for (i = 0; i < DEALT_CARDS; i++ ) {
         var userId = element.user_id
         var pileOrder = i+j
-        update.dealtGameCards(userId, msg.game_id, pileOrder)
-        .then( () => {
-        })
-        .catch( Error => {
-          console.log(Error)
-        })
+        promises.push(update.dealtGameCards(userId, msg.game_id, pileOrder))
       }
       j += DEALT_CARDS
     })
+    return Promise.all(promises)
   })
   .then( () => {
     return access.getPileCardId(msg.game_id, topOrder)
@@ -58,8 +53,6 @@ const start = (msg) => {
   .then( result => {
     return update.dealtGameCards(null, msg.game_id, --topOrder)
   })
-//    dealtCards(msg)
-//  })
   .catch( e => {
     console.log(e)
   })
@@ -72,44 +65,6 @@ function oneArray(numOfCards) {
   }
   return arr
 }
-
-function dealtCards(msg) {
-  var game_players, game_cards, topOrder
-
-  access.thisGamePlayers(msg.game_id)
-  .then( data => {
-    game_players = data
-    topOrder = DEALT_CARDS * game_players.length
-
-    var i, j = 0
-    game_players.forEach( element => {
-      for (i = 0; i < DEALT_CARDS; i++ ) {
-        var userId = element.user_id
-        var pileOrder = i+j
-        update.dealtGameCards(userId, msg.game_id, pileOrder)
-        .then( () => {
-        })
-        .catch( Error => {
-          console.log(Error)
-        })
-      }
-      j += DEALT_CARDS
-    })
-  })
-  .then( () => {
-    return access.getPileCardId(msg.game_id, topOrder)
-  })
-  .then( result => {
-    return update.startGame(++topOrder, result.card_id, msg.game_id)
-  })
-  .then( result => {
-    return update.dealtGameCards(null, msg.game_id, --topOrder)
-  })
-  .catch(Error => {
-    console.log(Error)
-  })
-
-} // end of dealtCards
 
 function shuffle(arr) {
   var i, j, k, temp

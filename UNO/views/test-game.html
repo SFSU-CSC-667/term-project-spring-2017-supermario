@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-  <title>Test Game</title>
+  <title>Game</title>
 
   <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
   <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
@@ -77,10 +77,10 @@
       <div class="row">      
         <div class="col-md-2 col-md-offset-5">
           <!--Player module-->
-          <div id="player">
-            <img src="/images/avatars/kid.png" alt="#" class="img-circle" width="100" height="100"> 
+          <div id="player1">
+            <img id="pl1Image" src="/images/avatars/kid.png" alt="#" class="img-circle" width="100" height="100"> 
             <h5>Player Name</h5><!--Insert player name here-->
-            <h6># of cards in hand</h6><!--Card count in hand-->
+            <h6><spand id="pl1Cards"></spand> of cards in hand</h6><!--Card count in hand-->
           </div>
           <!--end of player module-->
         </div>
@@ -88,10 +88,10 @@
       <div class="row">
         <div class="col-md-2">
           <!--Player module-->
-          <div id="player">
-            <img src="/images/avatars/rabbit.png" alt="#" class="img-circle" width="100" height="100"> 
+          <div id="player2">
+            <img id="pl2Image" src="/images/avatars/rabbit.png" alt="#" class="img-circle" width="100" height="100"> 
             <h5>Player Name</h5><!--Insert player name here-->
-            <h6># of cards in hand</h6><!--Card count in hand-->
+            <h6><spand id="pl2Cards"></spand> of cards in hand</h6><!--Card count in hand-->
           </div>
           <!--end of player module-->
         </div>
@@ -100,16 +100,21 @@
         </div>
         <div class="col-md-6">
           <h1>GAME TABLE HERE, DISCARD PILE</h1><!--Show top card of discard pile javascript here-->
+
+          <img id="cardPile" src="/images/cards/back.png"  onclick="post('draw')"  ondragend="post('draw')" alt="cardPile"> <!-- Can move to anywhere, just keep the id -->
+
+          <img id="discard" src="" alt="discard"><!-- Can move to anywhere, just keep the id -->
+
         </div>
         <div class="col-md-1">
           <p>direction image here</p><!--game direction image, code to invert image following the game direction-->
         </div>
         <div class="col-md-2">
           <!--Player module-->
-          <div id="player">
-            <img src="/images/avatars/teenage.png" alt="#" class="img-circle" width="100" height="100"> 
+          <div id="player3">
+            <img id="pl3Image" src="/images/avatars/teenage.png" alt="#" class="img-circle" width="100" height="100"> 
             <h5>Player Name</h5><!--Insert player name here-->
-            <h6># of cards in hand</h6><!--Card count in hand-->
+            <h6><spand id="pl1Cards"></spand> of cards in hand</h6><!--Card count in hand-->
           </div>
           <!--end of player module-->
         </div>
@@ -118,12 +123,15 @@
       <div class="h-divider"></div>
       <div class="row">
         <div class="col-md-2">
-          <img src="/images/avatars/lion.png" alt="#" class="img-circle" width="150" height="150">
+          <div id="player4">
+          <img id="pl4Image" src="/images/avatars/lion.png" alt="#" class="img-circle" width="150" height="150">
           <h4>Player Name</h4><!--Insert player name here-->
         </div>
         <div class="col-md-6">
           <h2>CARDS ON HAND HERE</h2><!--javascript to display cards on hand here-->
-          <div id="handCards"></div>
+
+          <div id="handCards"></div><!-- Can move to anywhere, just keep the id -->
+
         </div>
         <div class="col-md-2 col-md-offset-2">
           <button class="btn btn-default btn-lg btn-block" onclick="post('pass')">PASS</button><!--Skip turn function here-->

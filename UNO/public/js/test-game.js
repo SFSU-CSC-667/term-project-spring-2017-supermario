@@ -6,7 +6,7 @@ var userId = 3;
 var cardId = 0;
 var gameState = 0;
 var cards = {};
-var toServer = { word: {}, game_id: gameId, user_id: userId, gameState: gameState };
+var toServer = { word: {}, game_id: gameId, user_id: userId, game_state: gameState };
 /*
 var readyPlay, seat_count, seat_turn, top_discard, direction, players;  // shared information of the game
 var timeOut, mySeat, myTurn, myCards, pickedCard;
@@ -30,9 +30,8 @@ socket.on('game', function(msg) {
 
 $(function () {
   init()
-
-
   document.getElementById("gameNumber").innerHTML = gameId
+
   /* chat room needed to be solved chat channel */
   $('form').submit(function(){
     socket.emit('chat message', $('#m').val());
@@ -56,6 +55,8 @@ $(function () {
   })
 
 
+
+/*
   // Change the card image by click the option
   var select = '<option></option>'
   for (i=0; i<108; i++) {
@@ -69,7 +70,7 @@ $(function () {
     cardId = $(this).val()
     document.getElementById('card').src='images/cards/' + cards[cardId].image_url;
   })
-  
+  */
 })
 
 function userHandler(msg) {
@@ -88,6 +89,7 @@ function userHandler(msg) {
     case 'init':
       result = 'init'
       cards = msg.cardsTable;
+      drawPlayers(msg)
       break;
     case 'exit':
       result = 'exit';
@@ -106,6 +108,8 @@ function groupHandler(msg) {
     // send refresh request to server
     post('refresh')
   }
+
+  topDiscard(msg)
 //  document.getElementById('groupChannel').innerHTML = JSON.stringify(msg);
 }
 
@@ -140,6 +144,12 @@ function showHandCards(handCards) {
   document.getElementById('handCards').innerHTML = image
 }
 
-function showPlayers() {
+function topDiscard(msg) {
+  var discard = 'images/cards/' + cards[msg.game[0].top_discard].image_url
+ // var image = `<img id="discardPile" src="${discard}" alt="top_discard">`
+  document.getElementById('discard').src = discard
+}
+
+function drawPlayers(msg) {
   
 }

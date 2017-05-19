@@ -23,12 +23,32 @@ const TO_GROUP = { group:{}, refresh:{}, game_state:{}, players:{}, game:{}, car
 const eventHandler = (msg, callback) => {
   var toPlayer = Object.assign({}, TO_PLAYER)
   var toGroup = Object.assign({}, TO_GROUP)
+  var promises = []
 
   toPlayer.user_id = msg.user_id
   toGroup.group = msg.game_id
   handleEvent(msg, toPlayer, toGroup)
 
   // read data from the updated tables and assemble send out packages
+
+  promises = [access.cardsInHand(msg.game_id, msg.user_id)
+              , access.thisGame(msg.game_id)
+              , access.playersThisGroup(msg.game_id)
+              , access.cardsInPlayers(msg.game_id)]
+  Promise.all(promises).then(values => {
+    toPlayer.handCards = values[0]
+    toGroup.game = values[1]
+    toGroup.players = values[2]
+    toGroup.cardsInPlayers = values[3]
+    packOutPackage(msg, toPlayer, toGroup)
+    callback(toPlayer, toGroup)
+  })
+  .catch( e => {
+    console.log('error from eventHandler', e)
+  })
+ }              
+
+/*
   access.cardsInHand(msg.game_id, msg.user_id)
   .then( data => {
     toPlayer.handCards = data
@@ -36,10 +56,11 @@ const eventHandler = (msg, callback) => {
   })
   .then( data => {
     toGroup.game = data
-    return access.playersToGroup(msg.game_id)
+    return access.playersThisGroup(msg.game_id)
   })
   .then( data => {
     toGroup.players = data
+    console.log('players: ', toGroup.players)
     return access.cardsInPlayers(msg.game_id)
   })
   .then( data => {
@@ -54,7 +75,7 @@ const eventHandler = (msg, callback) => {
   })
 
 } // end of eventHandler
-
+*/
 
 function handleEvent(msg, toPlayer, toGroup) {
   const word = msg.word
@@ -164,14 +185,5 @@ function packOutPackage(msg, toPlayer, toGroup) {
     toPlayer.game_state = toGroup.game[0].game_state
   }
 }
-
-function isValidAction() {
-  return (msg.game_state === thisGame.game_state)
-}
-
-function isInTurn() {
-  return (thisGame.seat_turn === thisPlayer.seat_number)
-}
-
 
 module.exports = eventHandler
