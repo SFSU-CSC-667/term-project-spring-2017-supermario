@@ -6,7 +6,7 @@
   <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
   <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
  	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
-  <script src="/js/mock-game.js"></script>
+  <script src="/js/test-game.js"></script>
   <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
   <script src="/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
@@ -26,6 +26,7 @@
 
 </head>
 <body>
+  <div id="variables" data-user_id={{user_id}} data-game_id={{game_id}} />
   <!--Navbar-->
 	<nav class = "navbar navbar-inverse">
 		<div class = "container-fluid">
@@ -72,7 +73,7 @@
           <h1>GAME {{game_id}}</h1><!--GAME ID HERE-->
         </div>
         <div class="col-md-2">
-          <button class="btn btn-success btn-lg btn-block", onclick="ready()">READY</button><!--ready function here, maybe can set to disappear after game starts?-->
+          <button class="btn btn-success btn-lg btn-block", onclick="post('ready')">READY</button><!--ready function here, maybe can set to disappear after game starts?-->
         </div>
       </div>
       <div class="row">      
@@ -101,6 +102,9 @@
         </div>
         <div id="board" class="col-md-6">
           <h1>GAME TABLE HERE, DISCARD PILE</h1><!--Show top card of discard pile javascript here-->
+          <img id="cardPile" src="/images/cards/back.png"  onclick="post('draw')"  ondragend="post('draw')" alt="cardPile" width="100" height="150"> <!-- Can move to anywhere, just keep the id -->
+
+          <img id="discard" src="" alt="discard"><!-- Can move to anywhere, just keep the id -->
         </div>
         <div class="col-md-1">
           <p>direction image here</p><!--game direction image, code to invert image following the game direction-->
@@ -129,9 +133,9 @@
 		  {{/each}}
         </div>
         <div class="col-md-2 col-md-offset-2">
-          <button class="btn btn-default btn-lg btn-block">PASS</button><!--Skip turn function here-->
-          <button class="btn btn-warning btn-lg btn-block" onclick="draw()">DRAW A CARD</button><!--draw a card function here-->
-          <button class="btn btn-danger btn-lg btn-block">UNO</button><!--Call UNO! function here-->
+          <button class="btn btn-default btn-lg btn-block" onclick="post('pass')">PASS</button><!--Skip turn function here-->
+          <button class="btn btn-warning btn-lg btn-block" onclick="post('draw')">DRAW A CARD</button><!--draw a card function here-->
+          <button class="btn btn-danger btn-lg btn-block" onclick="post('uno')">UNO</button><!--Call UNO! function here-->
         </div>
       </div>
       <!--End of current player dashboard-->  
