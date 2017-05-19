@@ -216,9 +216,9 @@ INSERT INTO Users
 INSERT INTO Games
   (id, seat_count, seat_turn, direction, next_order, top_discard, joinable, game_state)
   VALUES
-  (1, 4, 0, 1, null, 1, false, 0),
-  (2, 3, 0, 1, null, 1, false, 0),
-  (3, 1, 0, 1, null, 0, true, 0);
+  (1, 4, 0, 0, null, 1, false, 0),
+  (2, 3, 0, 0, null, 1, false, 0),
+  (3, 2, 0, 0, null, 0, true, 0);
 
 INSERT INTO Players
   (game_id, user_id, ready_play, seat_number, say_uno, announce_suit, score)
@@ -230,4 +230,5 @@ INSERT INTO Players
   (2, 5, false, 0, false, null, 0),
   (2, 6, false, 1, false, null, 0),
   (2, 7, false, 2, false, null, 0),
-  (3, 8, false, 0, false, null, 0);
+  (3, 8, false, 0, false, null, 0),
+  (3, 1, false, 1, false, null, 0);
