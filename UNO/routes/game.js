@@ -6,7 +6,7 @@ router.get('/:id', function(req, res, next) {
 	console.log(Messages);
 	game_id=req.params.id; 
     Messages.listMsgByGameId(game_id).then( msgs => {
-  		res.render('game', { game_id:req.params.id, messages: msgs, email: req.user.email});
+  		res.render('game', { game_id:req.params.id, messages: msgs, email: req.user.email, user_id: req.user.id});
 		//res.render('game', { game_id: game_id });
 	}).catch(error => {
 		console.log("error");

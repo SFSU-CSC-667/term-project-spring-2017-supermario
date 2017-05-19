@@ -127,6 +127,9 @@ function sendOut(outPackage) {
 
 
 function init() {
+  gameId = $("#variables").data('game_id');
+  userId = $("#variables").data('user_id');
+  toServer = { word: {}, game_id: gameId, user_id: userId, game_state: gameState };
   post('init')
 }
 
