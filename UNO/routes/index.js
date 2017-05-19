@@ -1,4 +1,5 @@
 var express = require( 'express' );
+var app=express();
 var router=express.Router();
 const passport = require('../authentication/passport');
 var db=require('../database/db');
@@ -14,12 +15,11 @@ const saltRounds = 10;
 router.get('/', function(req, res, next) { // This function is called when receive request " GET / "
 
   if(req.isAuthenticated()){   // If the request contains session of user information
-       res.render('lobby', {auth_stat: 'Authenticated', email: req.user.email});
+       res.redirect('lobby');
   } else {
        res.render('index', { title: 'UNO'});
   }
 });
-
 
 
 router.post('/signup', (req, res, next) => {
@@ -30,7 +30,8 @@ router.post('/signup', (req, res, next) => {
 			//user.encrypted_password=hash;
     		Users.createFromSignUp(user)
     		.then(() => {
-				res.render('lobby', {auth_stat: 'Authenticated', email: req.body.email});
+  				console.log(user);	
+				res.redirect('login');
     		})
     		.catch(error => {
         		// error;
@@ -38,7 +39,9 @@ router.post('/signup', (req, res, next) => {
     		});
 		//});
 	}).catch( error => {
-		res.render('signup_form', { msg: 'email is already used'});
+		Avatars.findAll().then( ats => {
+			res.render('signup_form', { err_msg: 'email is already used', avatars:ats}); 
+    	});
 	});
 
 });
@@ -56,14 +59,13 @@ router.post(
   '/login',
   passport.authenticate( 'local', { session: true,
         successRedirect : '/lobby', // redirect to the lobby
-        failureRedirect : '/', // redirect back to the index if error
+        failureRedirect : '/login', // redirect back to the index if error
         failureFlash : true // allow flash messages } ),
   })
 );
 
 
 router.get('/login', function(req, res, next) {
-
 	if (req.isAuthenticated()){
 	res.render('lobby', { auth_stat: 'Authenticated', email: req.user.email });
 	} else {
@@ -92,7 +94,7 @@ router.get('/logout', function(req, res){
   req.logout();
   res.redirect('/');
 });
-
+/*
 router.get('/create_game', function(req, res, next) {
 	console.log(req.user.email);
 	Users.findByEmail(req.user.email).then( user => {
@@ -120,5 +122,5 @@ router.get('/create_game', function(req, res, next) {
 		res.render('lobby', {auth_stat: 'Authenticated', email: req.user.email});
 	});
 
-});
+});*/
 module.exports = router;
