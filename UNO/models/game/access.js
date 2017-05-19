@@ -26,7 +26,7 @@ const GET_PILE_CARDID = `SELECT card_id
 const GAME_CARDS = `SELECT * FROM Game_Cards
                     WHERE game_id = $1` 
 
-const PLAYERS_TO_GROUP = `SELECT GC.user_id, U.nick_name, U.user_score, P.score
+const PLAYERS_THIS_GROUP = `SELECT GC.user_id, U.nick_name, U.user_score, P.score
                                 , P.seat_number, P.announce_suit, A.image_url
                           FROM Players AS P, Users AS U, Game_Cards AS GC, Avatars AS A
                           WHERE U.id =  P.user_id
@@ -64,6 +64,6 @@ module.exports = {
 
   // for send to client(s)
   cardsInHand: (game_id, user_id) => db.any(CARDS_IN_HAND, [game_id, user_id]),
-  playersToGroup: (game_id) => db.any(PLAYERS_TO_GROUP, game_id),
+  playersThisGroup: (game_id) => db.any(PLAYERS_THIS_GROUP, game_id),
   cardsInPlayers: (game_id) => db.any(CARDS_IN_PLAYERS, game_id)
 }
