@@ -17,15 +17,21 @@
             <form name="signup", method="post">
                 <div class="form-group">
                     <label for="email">Email address:</label>
-                    <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+                    <input type="email" class="form-control" id="email" placeholder="Enter email" name="email"
+					required
+                    data-fv-notempty-message="The email is required" />
 		        </div>
                 <div class="form-group">
                     <label for="nick_name">Nick Name:</label>
-                    <input type="text" class="form-control" id="nickname" placeholder="Enter nick name" name="nick_name">
+                    <input type="text" class="form-control" id="nickname" placeholder="Enter nick name" name="nick_name"
+					required
+                    data-fv-notempty-message="The email is required" />
 		        </div>
                 <div class="form-group">
                     <label for="pwd">Password:</label>
-                    <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="password">
+                    <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="password"
+					required
+                    data-fv-notempty-message="The email is required" />
 		        </div>
 				<div class="row">
 					{{#each avatars}}
