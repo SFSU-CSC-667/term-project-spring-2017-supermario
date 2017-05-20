@@ -83,6 +83,10 @@ function userHandler(msg) {
     case 'pickColor':
       result = 'pick a color';
       break;
+    case 'redraw':
+      result = 'redraw'
+      showHandCards(msg.handCards)
+      break
     case 'refresh':
       result = 'refresh';
       break;
@@ -98,25 +102,27 @@ function userHandler(msg) {
       result = 'no matched order';
   }
   // following for test use only
+  gameState = msg.game_state
   console.log('client result: ', result)
   //  document.getElementById('userChannel').innerHTML = JSON.stringify(msg);
   if( cards !== {}) showHandCards(msg.handCards)
 }
 
 function groupHandler(msg) {
+  gameState = msg.game_state
+  topDiscard(msg)
   if (msg.refresh === 'refresh') {
     // send refresh request to server
     post('refresh')
   }
 
-  topDiscard(msg)
 //  document.getElementById('groupChannel').innerHTML = JSON.stringify(msg);
 }
 
 /* respond to play action */
 function post(word) {
 //  pars play action
-
+  toServer.game_state = gameState
   toServer.word = word
   sendOut(toServer);
 }
@@ -134,6 +140,7 @@ function init() {
 function showHandCards(handCards) {
   var cardsInhand = handCards
   var x = 0, image = '', oneCard = ''
+  
   cardsInhand.forEach(element => {
     cardId = element.card_id
     oneCard = 'images/cards/' + cards[cardId].image_url

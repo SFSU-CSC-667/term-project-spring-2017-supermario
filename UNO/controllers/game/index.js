@@ -35,47 +35,22 @@ const eventHandler = (msg, callback) => {
               , access.thisGame(msg.game_id)
               , access.playersThisGroup(msg.game_id)
               , access.cardsInPlayers(msg.game_id)]
-  Promise.all(promises).then(values => {
+  Promise.all(promises)
+  .then(values => {
     toPlayer.handCards = values[0]
     toGroup.game = values[1]
     toGroup.players = values[2]
     toGroup.cardsInPlayers = values[3]
     packOutPackage(msg, toPlayer, toGroup)
+    return delay(50)
+  .then(() => {
     callback(toPlayer, toGroup)
   })
   .catch( e => {
     console.log('error from eventHandler', e)
   })
- }              
-
-/*
-  access.cardsInHand(msg.game_id, msg.user_id)
-  .then( data => {
-    toPlayer.handCards = data
-    return access.thisGame(msg.game_id)
-  })
-  .then( data => {
-    toGroup.game = data
-    return access.playersThisGroup(msg.game_id)
-  })
-  .then( data => {
-    toGroup.players = data
-    console.log('players: ', toGroup.players)
-    return access.cardsInPlayers(msg.game_id)
-  })
-  .then( data => {
-    toGroup.cardsInPlayers = data
-  })
-  .then( data => {
-    packOutPackage(msg, toPlayer, toGroup)
-    callback(toPlayer, toGroup)
-  })
-  .catch( e => {
-    console.log('error from eventHandler', e)
-  })
-
-} // end of eventHandler
-*/
+ })              
+}
 
 function handleEvent(msg, toPlayer, toGroup) {
   const word = msg.word
@@ -100,10 +75,13 @@ function handleEvent(msg, toPlayer, toGroup) {
     case 'ready':
       result = ready(msg)  // if ready, then start game
       if (result) {
+        toGroup.refresh = 'refresh'
         start(msg)
       } else {
         result = 'not ready to start'
       }
+              toGroup.refresh = 'refresh'
+
                       start(msg) // for test with out players are really ready
       break
     case 'red':
@@ -133,6 +111,9 @@ function handleEvent(msg, toPlayer, toGroup) {
 
 const wordMapOrder = word => {
   switch (word) {
+    case 'refresh':
+      result = 'redraw'
+      break
     case 'draw':
       result = 'settle'
       break
@@ -184,6 +165,12 @@ function packOutPackage(msg, toPlayer, toGroup) {
     toGroup.game_state = toGroup.game[0].game_state
     toPlayer.game_state = toGroup.game[0].game_state
   }
+}
+
+function delay(t) {
+   return new Promise(function(resolve) { 
+       setTimeout(resolve, t)
+   })
 }
 
 module.exports = eventHandler
