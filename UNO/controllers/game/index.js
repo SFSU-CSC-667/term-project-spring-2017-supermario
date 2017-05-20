@@ -27,15 +27,14 @@ const eventHandler = (msg, callback) => {
 
   toPlayer.user_id = msg.user_id
   toGroup.group = msg.game_id
-  handleEvent(msg, toPlayer, toGroup)
-
-  // read data from the updated tables and assemble send out packages
-
-  promises = [access.cardsInHand(msg.game_id, msg.user_id)
-              , access.thisGame(msg.game_id)
-              , access.playersThisGroup(msg.game_id)
-              , access.cardsInPlayers(msg.game_id)]
-  Promise.all(promises)
+  handleEvent(msg, toPlayer, toGroup).then( () => {
+    // read data from the updated tables and assemble send out packages
+    promises = [access.cardsInHand(msg.game_id, msg.user_id)
+                , access.thisGame(msg.game_id)
+                , access.playersThisGroup(msg.game_id)
+                , access.cardsInPlayers(msg.game_id)]
+    return Promise.all(promises)
+  })
   .then(values => {
     toPlayer.handCards = values[0]
     toGroup.game = values[1]
@@ -54,9 +53,10 @@ const eventHandler = (msg, callback) => {
 
 function handleEvent(msg, toPlayer, toGroup) {
   const word = msg.word
+  var promise;
   console.log(word)
   if (typeof word === 'number') {
-    playCards(msg)
+    promise = playCards(msg)
     result = 'get number'
   }
   switch (word) {
@@ -107,6 +107,7 @@ function handleEvent(msg, toPlayer, toGroup) {
       result = 'no matched word'
   }
   console.log('result: ', result)
+  return promise || new Promise((resolve) => {resolve()});
 }
 
 const wordMapOrder = word => {
