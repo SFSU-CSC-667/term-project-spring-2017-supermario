@@ -19,7 +19,7 @@ const playCards = msg => {
   promises = [ access.thisGame(msg.game_id)
               , access.gameCards(msg.game_id)
               , access.thisGamePlayers(msg.game_id) ]
-  Promise.all(promises).then(values => {
+  return Promise.all(promises).then(values => {
     thisGame = values[0]
     thisGameCards = values[1]
     thisGamePlayers = values[2]
@@ -27,6 +27,7 @@ const playCards = msg => {
     if (validPlay(msg, thisGame, thisGamePlayers)) {
       promises = dealCard(msg, thisGame, thisGameCards, thisGamePlayers)
     } else {
+      promises = []
       console.log('not valid play')
     }
     return Promise.all(promises)
