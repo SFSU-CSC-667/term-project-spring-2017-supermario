@@ -161,6 +161,10 @@ function setRefreshFlag(word) {
 }
 
 function packOutPackage(msg, toPlayer, toGroup) {
+  
+  if (toPlayer.handCards.length===0){
+  	toGroup.winner=msg.user_id;
+  }
   toPlayer.user_id = msg.user_id
   toPlayer.order = wordMapOrder(msg.word)
   toGroup.refresh = setRefreshFlag(msg.word)
@@ -177,4 +181,22 @@ function delay(t) {
    })
 }
 
+function win_condition(hand_size) {
+   return new Promise(function(resolve) {
+        var score=0;
+        var count=0;
+        if(hand_size===0){
+        toGroup.cardsInPlayers.forEach(card => {
+          score+=card.point;
+		  count++;
+          if(toGroup.cardsInPlayers.length === count)
+			 resolve(score);
+   	     });
+		}else{
+			 resolve(0);
+		}
+   })
+}
+
 module.exports = eventHandler
+

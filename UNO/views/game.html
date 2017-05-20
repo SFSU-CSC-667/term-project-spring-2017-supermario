@@ -79,8 +79,8 @@
           <!--Player module-->
           <div id="opponent1">
             <img src="/images/avatars/kid.png" alt="#" class="img-circle" width="100" height="100"> 
-            <h5>Player Name</h5><!--Insert player name here-->
-            <h6># of cards in hand</h6><!--Card count in hand-->
+            <div id="opponent1_name">Player Name</div><!--Insert player name here-->
+            <div id="opponent1_hand"># of cards in hand</div><!--Card count in hand-->
           </div>
           <!--end of player module-->
         </div>
@@ -90,8 +90,8 @@
           <!--Player module-->
           <div id="opponent2">
             <img src="/images/avatars/rabbit.png" alt="#" class="img-circle" width="100" height="100"> 
-            <h5>Player Name</h5><!--Insert player name here-->
-            <h6># of cards in hand</h6><!--Card count in hand-->
+            <div id="opponent2_name">Player Name</div><!--Insert player name here-->
+            <div id="opponent2_hand"># of cards in hand</div><!--Card count in hand-->
           </div>
           <!--end of player module-->
         </div>
@@ -99,7 +99,7 @@
           <p>left direction image here</p><!--game direction image, code to invert image following the game direction-->
         </div>
         <div id="board" class="col-md-6">
-          <h1>GAME TABLE HERE, DISCARD PILE</h1><!--Show top card of discard pile javascript here-->
+          <h1 id="board_text">GAME TABLE HERE, DISCARD PILE</h1><!--Show top card of discard pile javascript here-->
           <img id="cardPile" src="/images/cards/back.png"  onclick="post('draw')"  ondragend="post('draw')" alt="cardPile" width="100" height="150"> <!-- Can move to anywhere, just keep the id -->
 
           <img id="discard" src="" alt="discard"><!-- Can move to anywhere, just keep the id -->
@@ -111,8 +111,8 @@
           <!--Player module-->
           <div id="opponent3">
             <img src="/images/avatars/teenage.png" alt="#" class="img-circle" width="100" height="100"> 
-            <h5>Player Name</h5><!--Insert player name here-->
-            <h6># of cards in hand</h6><!--Card count in hand-->
+            <div id="opponent3_name">Player Name</div><!--Insert player name here-->
+            <div id="opponent3_hand"># of cards in hand</div><!--Card count in hand-->
           </div>
           <!--end of player module-->
         </div>

@@ -121,6 +121,9 @@ function userHandler(msg) {
 }
 
 function groupHandler(msg) {
+  if (msg.hasOwnProperty("winner")) {
+      document.getElementById('board_text').innerHTML = "Winner is " + msg.winner;     
+  }
   if (msg.order === 'update_chat') {
 		html = chat_template(msg);
 		document.getElementById('messages').innerHTML = html;
