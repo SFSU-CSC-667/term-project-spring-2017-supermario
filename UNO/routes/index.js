@@ -43,7 +43,7 @@ router.post('/signup', (req, res, next) => {
 		//});
 	}).catch( error => {
 		Avatars.findAll().then( ats => {
-			res.render('signup_form', { err_msg: 'email is already used', avatars:ats}); 
+			res.render('signup_form', { error: 'email is already used', avatars:ats}); 
     	});
 	});
 
@@ -75,7 +75,7 @@ router.get('/login', function(req, res, next) {
 	if (req.isAuthenticated()){
 	res.render('lobby', { auth_stat: 'Authenticated', email: req.user.email });
 	} else {
-	res.render('login_form', { title: 'Login' });
+	res.render('login_form', { error: req.flash('error') });
 	}
 });
 

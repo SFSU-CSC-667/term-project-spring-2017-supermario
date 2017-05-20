@@ -11,7 +11,9 @@
     <div class="row">
         <div class="col-md-4 col-md-offset-4 text-center">
             <h1>Sign Up for UNO</h1>
-			<h2>{{err_msg}}</h2>
+			{{#if error}}
+    		<div class="alert alert-danger">{{error}}</div>
+			{{/if}}
             <img src="/images/splash/UNOBG.png" class="img-responsive" alt="UNO Splash Image">
 
             <form name="signup", method="post">
@@ -25,13 +27,13 @@
                     <label for="nick_name">Nick Name:</label>
                     <input type="text" class="form-control" id="nickname" placeholder="Enter nick name" name="nick_name"
 					required
-                    data-fv-notempty-message="The email is required" />
+                    data-fv-notempty-message="The nick name is required" />
 		        </div>
                 <div class="form-group">
                     <label for="pwd">Password:</label>
                     <input type="password" class="form-control" id="pwd" placeholder="Enter password" name="password"
 					required
-                    data-fv-notempty-message="The email is required" />
+                    data-fv-notempty-message="The password is required" />
 		        </div>
 				<div class="row">
 					{{#each avatars}}
