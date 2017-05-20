@@ -38,6 +38,7 @@ const eventHandler = (msg, callback) => {
     toPlayer.handCards = values[0]
     toGroup.game = values[1]
     toGroup.players = values[2]
+	console.log(toGroup.players);
     toGroup.cardsInPlayers = values[3]
     packOutPackage(msg, toPlayer, toGroup)
     return delay(50)
@@ -71,16 +72,20 @@ function handleEvent(msg, toPlayer, toGroup) {
       result = 'get pass'
       break
     case 'ready':
-      result = ready(msg)  // if ready, then start game
+      ready(msg).then( result => {  // if ready, then start game
       if (result) {
+		result="start game";
         toGroup.refresh = 'refresh'
         promise = start(msg)
       } else {
-        result = 'not ready to start'
+        result = 'not ready to start';
       }
-              toGroup.refresh = 'refresh'
 
-                   promise = start(msg) // for test with out players are really ready
+      toGroup.refresh = 'refresh'
+	  });
+	  
+       //               start(msg) // for test with out players are really ready
+
       break
     case 'red':
     case 'green':
@@ -104,7 +109,7 @@ function handleEvent(msg, toPlayer, toGroup) {
     default:
       result = 'no matched word'
   }
-  console.log('result: ', result)
+  //console.log('result: ', result)
   return promise || new Promise((resolve) => {resolve()});
 }
 
@@ -124,6 +129,9 @@ const wordMapOrder = word => {
       break;
     case 'exit':
       result = 'exit'
+      break
+    case 'send_chat':
+      result = 'uppate_chat'
       break
     default:
       result = 'none'
@@ -156,6 +164,10 @@ function setRefreshFlag(word) {
 }
 
 function packOutPackage(msg, toPlayer, toGroup) {
+  
+  if (toPlayer.handCards.length===0 && toGroup.cardsInPlayers.length>0){
+  	toGroup.winner=msg.user_id;
+  }
   toPlayer.user_id = msg.user_id
   toPlayer.order = wordMapOrder(msg.word)
   toGroup.refresh = setRefreshFlag(msg.word)
@@ -172,4 +184,22 @@ function delay(t) {
    })
 }
 
+function win_condition(hand_size) {
+   return new Promise(function(resolve) {
+        var score=0;
+        var count=0;
+        if(hand_size===0){
+        toGroup.cardsInPlayers.forEach(card => {
+          score+=card.point;
+		  count++;
+          if(toGroup.cardsInPlayers.length === count)
+			 resolve(score);
+   	     });
+		}else{
+			 resolve(0);
+		}
+   })
+}
+
 module.exports = eventHandler
+

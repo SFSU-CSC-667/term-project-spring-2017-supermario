@@ -75,8 +75,8 @@ return new Promise( function(fulfill, reject){
 				Messages.create({game_id:msg.game_id, user_id:user.id, message: msg.message}).then( success => {
 					Messages.listMsgByGameId(msg.game_id).then( msgs => {
 						console.log(msgs);
-						var toPlayer = {messages: msgs, order: "update_chat"};
-						var toGroup = {messages: msgs, order: "update_chat"};
+						var toPlayer = {messages: msgs, order: "update_chat",refresh:"refresh",user_id:user.id};
+						var toGroup = {messages: msgs, order: "update_chat",refresh:"refresh",group:msg.game_id};
 						fulfill({player:toPlayer, group:toGroup});
 					});
 				});

@@ -19,7 +19,7 @@ return new Promise( function(fulfill, reject){
 					var player = {
 						game_id: game.id,
 						user_id: user.id,
-						seat_number: 1,
+						seat_number: 0,
 					};
 					Players.create(player).then( player => {
 						console.log(player);

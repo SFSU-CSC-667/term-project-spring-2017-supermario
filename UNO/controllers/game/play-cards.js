@@ -47,24 +47,26 @@ const playCards = msg => {
 function validPlay(msg, thisGame, thisGamePlayers) {
   var inTurn = colorMatch = numberMatch = validState = anyCard = false
 
-  if (msg.word === 'draw') return true
 
   // check if the top discard is action card
-  if (cards[thisGame[0].top_discard].number_symbol > 9 ) anyCard = true
+  if (cards[thisGame[0].top_discard].number_symbol > 12 ) anyCard = true
 console.log('topdiscard ',cards[thisGame[0].top_discard].number_symbol)
   // check if in valid state
   validState = (msg.game_state === thisGame[0].game_state) ? true : false
 
   // check if in turn
+  var player=0;
   thisGamePlayers.forEach(element => {
+	player++;
     if (msg.user_id === element.user_id &&
           element.seat_number === thisGame[0].seat_turn) {
       inTurn = true
+	  
     }
   })
-
+  if (msg.word === 'draw') return inTurn;
   // check if wild cards
-  if (msg.word > 99) return true
+  if (msg.word > 99) return inTurn;
 
   // check color
   var cardColor
@@ -79,9 +81,9 @@ console.log('topdiscard ',cards[thisGame[0].top_discard].number_symbol)
 
     console.log(' valid play? ', inTurn && validState && (colorMatch || numberMatch))
 
-  return anyCard || (validState && (colorMatch || numberMatch)) // test only
+  //return anyCard || (validState && (colorMatch || numberMatch)) // test only
 
-//  return (anyCard && inTurn) || (inTurn && validState && (colorMatch || numberMatch))
+  return (anyCard && inTurn) || (inTurn && validState && (colorMatch || numberMatch))
 } // end of validState
 
 function dealCard(msg, thisGame, thisGameCards, thisGamePlayers) {
@@ -93,56 +95,111 @@ function dealCard(msg, thisGame, thisGameCards, thisGamePlayers) {
 
    if ( thisCard === 10 ) {
     // skip card
-    newSeatTurn = getNewSeatTurn(thisGame, 2)
+
+    promises.push(update.addPileOrder(msg.game_id, thisGame[0].next_order))                     
     promises.push(update.playNumberCard(msg.game_id, msg.word))
+    getNewSeatTurn(thisGame, 2).then( newSeatTurn => {
+
     promises.push(update.updateGame(newSeatTurn, thisGame[0].direction
                      , thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
+    });
   } else if ( thisCard === 11 ) {
     // reverse card
-    var newDirection = -1 * thisGame[0].direction
-    newSeatTurn = getNewSeatTurn(thisGame, -1)
+    promises.push(update.addPileOrder(msg.game_id, thisGame[0].next_order))                     
     promises.push(update.playNumberCard(msg.game_id, msg.word))
+    var newDirection = -1 * thisGame[0].direction
+
+    getNewSeatTurn(thisGame, -1).then( newSeatTurn => {
+
     promises.push(update.updateGame(newSeatTurn, newDirection
                      , thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
+    });
  } else if ( msg.word === 'draw') {
    // draw a card
-   promises.push(update.dealtGameCards(msg.user_id, msg.game_id, thisGame[0].next_order))
-   promises.push(update.updateGame(thisGame[0].seat_turn, thisGame[0].direction
-                     , ++thisGame[0].next_order, thisGame[0].top_discard, ++thisGame[0].game_state, msg.game_id))
+   promises.push(update.dealtGameCards(msg.user_id, msg.game_id, ++thisGame[0].next_order))
+   getNewSeatTurn(thisGame, 1).then( newSeatTurn => {
+   promises.push(update.updateGame(newSeatTurn, thisGame[0].direction
+                     , thisGame[0].next_order, thisGame[0].top_discard, ++thisGame[0].game_state, msg.game_id))
+    });
  
- } else {  // if( thisCard < 10 ) {
+ } else if( thisCard < 10 ) {
     // number card
     promises.push(update.addPileOrder(msg.game_id, thisGame[0].next_order))                     
     promises.push(update.playNumberCard(msg.game_id, msg.word))
     // following not set seat_turn + 1 for testing thd same player
     // game state not thisGame.game_state + 1
-    newSeatTurn = getNewSeatTurn(thisGame, 1)
+    getNewSeatTurn(thisGame, 1).then( newSeatTurn => {
     promises.push(update.updateGame(newSeatTurn, thisGame[0].direction
-                     , ++thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
-
+                     , thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
+    });
   }
-  /*
+  
    else if ( thisCard === 12 ) {
     // draw 2 card
+    promises.push(update.addPileOrder(msg.game_id, thisGame[0].next_order))                     
+    promises.push(update.playNumberCard(msg.game_id, msg.word))
+    getNewSeatTurn(thisGame, 1).then( passedSeatTurn => {
+    	thisGamePlayers.forEach(element => {
+         	if ( element.seat_number === passedSeatTurn ) {
+   				promises.push(update.dealtGameCards(element.user_id, msg.game_id, ++thisGame[0].next_order))
+   				promises.push(update.dealtGameCards(element.user_id, msg.game_id, ++thisGame[0].next_order))
+    			getNewSeatTurn(thisGame, 1).then( newSeatTurn => {
+  					  promises.push(update.updateGame(newSeatTurn, thisGame[0].direction
+                     , thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
+    			});
+			
+		    }
+		});
+    });
     // let go temparary
 
   } else if ( thisCard === 13 ) {
     // wild card
+    promises.push(update.addPileOrder(msg.game_id, thisGame[0].next_order))                     
+    promises.push(update.playNumberCard(msg.game_id, msg.word))
+    // following not set seat_turn + 1 for testing thd same player
+    // game state not thisGame.game_state + 1
+    getNewSeatTurn(thisGame, 1).then( newSeatTurn => {
+    promises.push(update.updateGame(newSeatTurn, thisGame[0].direction
+                     , thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
     // let go temparary
-
+	});
 
   } else if ( thisCard === 14 ) {
     // wild draw 4 card
+    promises.push(update.addPileOrder(msg.game_id, thisGame[0].next_order))                     
+    promises.push(update.playNumberCard(msg.game_id, msg.word))
+    // following not set seat_turn + 1 for testing thd same player
+    // game state not thisGame.game_state + 1
+    getNewSeatTurn(thisGame, 1).then( passedSeatTurn => {
+    	thisGamePlayers.forEach(element => {
+         	if ( element.seat_number === passedSeatTurn ) {
+   				promises.push(update.dealtGameCards(element.user_id, msg.game_id, ++thisGame[0].next_order))
+   				promises.push(update.dealtGameCards(element.user_id, msg.game_id, ++thisGame[0].next_order))
+   				promises.push(update.dealtGameCards(element.user_id, msg.game_id, ++thisGame[0].next_order))
+   				promises.push(update.dealtGameCards(element.user_id, msg.game_id, ++thisGame[0].next_order))
+    			getNewSeatTurn(thisGame, 1).then( newSeatTurn => {
+  					  promises.push(update.updateGame(newSeatTurn, thisGame[0].direction
+                     , thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
+    			});
+			
+		    }
+        });
+    });
     // let go temparary
 
   }
-  */ 
+  
 
   return promises
 } // end of dealCard
 
 function getNewSeatTurn(thisGame, step) {
-  return Math.abs((thisGame[0].seat_turn + step*thisGame[0].direction) % thisGame[0].seat_count)
+
+  return new Promise( function(fulfill, reject){
+ 	 fulfill( (thisGame[0].seat_turn + step*thisGame[0].direction + thisGame[0].seat_count) % thisGame[0].seat_count);
+  });
+
 }
 
 module.exports = playCards

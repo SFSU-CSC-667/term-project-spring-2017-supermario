@@ -3,6 +3,8 @@ const access = require('../../models/game/access')
 /* set the player ready to play and check if all players are ready */
 
 const ready = (msg) => {
+return new Promise( function(fulfill, reject){
+
   var allReady =  true
   var players = 0
 
@@ -15,15 +17,20 @@ const ready = (msg) => {
     result.forEach(element => {
       players++
       if (element.ready_play === false) {
-        allReady = false
+	    console.log(element.user_id + "IS NOT READY");
+        allReady = false;
       }
+	  if(players === result.length){
+		console.log( allReady && players === 4);
+  	  	fulfill(allReady && players === 4)
+	  }
     })
   })
   .catch(e => {
     console.log(e)
+	reject(e)
   })
-  
-  return allReady && players > 1
+  }); 
 }
 
 module.exports = ready

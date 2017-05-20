@@ -27,12 +27,18 @@ socket.on('game', function(msg) {
 /* Check timeout */
 /* Event response */
 // *
+var chat=`{{#each messages}}
+		<li>{{this.nick_name}}: {{this.message}}   {{this.post_time}}</li>
+		{{/each}}`;
+
+var chat_template=Handlebars.compile(chat);
 
 $(function () {
   init()
   document.getElementById("gameNumber").innerHTML = gameId
 
   /* chat room needed to be solved chat channel */
+ /*
   $('form').submit(function(){
     socket.emit('chat message', $('#m').val());
     $('#m').val('');
@@ -43,7 +49,7 @@ $(function () {
     $('#messages').append($('<li>').text(msg));
     window.scrollTo(0, document.body.scrollHeight)
   });
-  
+  */
   socket.on('game', function(msg) {
     if (msg.hasOwnProperty("user_id") && msg.user_id === userId) {
       userHandler(msg)
@@ -93,11 +99,17 @@ function userHandler(msg) {
     case 'init':
       result = 'init'
       cards = msg.cardsTable;
-      drawPlayers(msg)
+      //drawPlayers(msg)
       break;
     case 'exit':
       result = 'exit';
       break;
+	case 'update_chat':
+		result='update chat';
+		html = chat_template(msg);
+		document.getElementById('messages').innerHTML = html;
+	    window.scrollTo(0, document.body.scrollHeight);
+		break;
     default:
       result = 'no matched order';
   }
@@ -109,14 +121,23 @@ function userHandler(msg) {
 }
 
 function groupHandler(msg) {
+  if (msg.hasOwnProperty("winner")) {
+      document.getElementById('board_text').innerHTML = "Winner is " + msg.winner;     
+  }
+  if (msg.order === 'update_chat') {
+		html = chat_template(msg);
+		document.getElementById('messages').innerHTML = html;
+	    window.scrollTo(0, document.body.scrollHeight);
+  }else{
   gameState = msg.game_state
   topDiscard(msg)
   drawArror(msg)
+  drawPlayers(msg)
   if (msg.refresh === 'refresh') {
     // send refresh request to server
     post('refresh')
   }
-
+  }
 //  document.getElementById('groupChannel').innerHTML = JSON.stringify(msg);
 }
 
@@ -156,21 +177,43 @@ function showHandCards(handCards) {
 }
 
 function topDiscard(msg) {
-  var discard = '/images/cards/' + cards[msg.game[0].top_discard].image_url
+  if(cards[msg.game[0].top_discard]) {
+    var discard = '/images/cards/' + cards[msg.game[0].top_discard].image_url 
+  }else{
+    var discard = '/images/cards/back.png';
+  }
  // var image = `<img id="discardPile" src="${discard}" alt="top_discard">`
   document.getElementById('discard').src = discard
 }
 
 function drawArror(msg) {
   if (msg.game[0].direction === 1) {
-    document.getElementById('dir_left').innerHTML = '<img id="left-up" src="/images/splash/leftup.png" alt="arrow">'
-    document.getElementById('dir_right').innerHTML = '<img id="right-down" src="/images/splash/rightdown.png" alt="arrow">'
-  } else {
-    document.getElementById('dir_left').innerHTML = '<img id="left-down" src="/images/splash/leftdown.png" alt="arrow">'
-    document.getElementById('dir_right').innerHTML = '<img id="right-up" src="/images/splash/rightup.png" alt="arrow">' 
+
+    document.getElementById('dir_left').innerHTML = `<img id="left-arrow" src="/images/splash/leftup.png">`
+    document.getElementById('dir_right').innerHTML = `<img id="left-arrow" src="/images/splash/rightdown.png">` 
+  } else if (msg.game[0].direction === -1) {
+    document.getElementById('dir_left').innerHTML = `<img id="left-arrow" src="/images/splash/leftdown.png">`
+    document.getElementById('dir_right').innerHTML = `<img id="left-arrow" src="/images/splash/rightup.png">` 
+
   }
 }
 
+
 function drawPlayers(msg) {
-  
+   var userSeat=0;
+   var playerNum=msg.players.length;
+   msg.players.forEach( pl => {
+        if(pl.id===userId){
+			userSeat=pl.seat_number;
+            if(msg.game[0].seat_turn===userSeat)
+				document.getElementById('player_hint').innerHTML="Your Turn."
+            else
+				document.getElementById('player_hint').innerHTML="Wait for other players."
+			
+   			document.getElementById('opponent1_name').innerHTML=msg.players[(userSeat+1)%playerNum].nick_name
+   			document.getElementById('opponent2_name').innerHTML=msg.players[(userSeat+2)%playerNum].nick_name
+   			document.getElementById('opponent3_name').innerHTML=msg.players[(userSeat+3)%playerNum].nick_name
+        } 
+   });
+   
 }

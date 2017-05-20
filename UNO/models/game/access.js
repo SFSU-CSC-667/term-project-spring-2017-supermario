@@ -26,14 +26,13 @@ const GET_PILE_CARDID = `SELECT card_id
 const GAME_CARDS = `SELECT * FROM Game_Cards
                     WHERE game_id = $1` 
 
-const PLAYERS_THIS_GROUP = `SELECT GC.user_id, U.nick_name, U.user_score, P.score
+const PLAYERS_THIS_GROUP = `SELECT U.id, U.nick_name, U.user_score, P.score
                                 , P.seat_number, P.announce_suit, A.image_url
-                          FROM Players AS P, Users AS U, Game_Cards AS GC, Avatars AS A
+                          FROM Players AS P, Users AS U, Games AS G, Avatars AS A
                           WHERE U.id =  P.user_id
                           AND U.avatar_id = A.id
-                          AND P.game_id = GC.game_id
-                          AND GC.game_id = $1
-                          AND GC.user_id <> null
+                          AND P.game_id = G.id
+                          AND G.id = $1
                           ORDER BY P.seat_number`
 
 

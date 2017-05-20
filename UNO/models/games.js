@@ -6,7 +6,7 @@ const MaxPlayer=4;
 class Games extends Models {
 
 	static create(){
-		return db.one("insert into games(seat_count,joinable) values(1,true) returning id, joinable");
+		return db.one("insert into games(seat_turn,direction,seat_count,joinable) values(1,1,1,true) returning id, joinable");
 	};
 
 	static findById(id){
@@ -19,7 +19,7 @@ class Games extends Models {
 				if (game.seat_count === MaxPlayer)
 					throw "Error: The room is full";
 					console.log(game);
-					obj.seat_number=game.seat_count+1;
+					obj.seat_number=game.seat_count;
 					db.one("insert into players(game_id, user_id, seat_number) values(${game_id}, ${user_id}, ${seat_number}) returning game_id, user_id", obj).then( pl => {
 						game.seat_count++;
 						if (game.seat_count === MaxPlayer)

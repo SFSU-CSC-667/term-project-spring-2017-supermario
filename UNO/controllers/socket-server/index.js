@@ -2,7 +2,7 @@ const socketIo = require('socket.io');
 const eventHandler = require('../game');
 const lobbyController = require('../lobby');
 const mockGameController = require('../mock-game');
-const mockGAMESERVER = 'mock game server';
+const GAMESERVER = 'game';
 
 const LOBBYSERVER = 'lobby server';
 
@@ -41,12 +41,12 @@ console.log('server received ', JSON.stringify(msg))
 			console.log(error);
 		  });
       });
-	  socket.on(mockGAMESERVER, function(msg) {
+	  socket.on('game chat', function(msg) {
         // next line is for testing use
         console.log('server received ', JSON.stringify(msg));
 		  mockGameController(msg).then(ret => {	
-          	socket.emit(mockGAMESERVER, ret.player);
-          	io.sockets.emit(mockGAMESERVER, ret.group);
+          	socket.emit(GAMESERVER, ret.player);
+          	io.sockets.emit(GAMESERVER, ret.group);
 		  }).catch( error => {
 			console.log(error);
 		  });
