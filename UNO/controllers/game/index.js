@@ -74,13 +74,13 @@ function handleEvent(msg, toPlayer, toGroup) {
       result = ready(msg)  // if ready, then start game
       if (result) {
         toGroup.refresh = 'refresh'
-        start(msg)
+        promise = start(msg)
       } else {
         result = 'not ready to start'
       }
               toGroup.refresh = 'refresh'
 
-                      start(msg) // for test with out players are really ready
+                   promise = start(msg) // for test with out players are really ready
       break
     case 'red':
     case 'green':

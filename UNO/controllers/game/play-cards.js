@@ -94,12 +94,14 @@ function dealCard(msg, thisGame, thisGameCards, thisGamePlayers) {
    if ( thisCard === 10 ) {
     // skip card
     newSeatTurn = getNewSeatTurn(thisGame, 2)
+    promises.push(update.playNumberCard(msg.game_id, msg.word))
     promises.push(update.updateGame(newSeatTurn, thisGame[0].direction
                      , thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
   } else if ( thisCard === 11 ) {
     // reverse card
     var newDirection = -1 * thisGame[0].direction
     newSeatTurn = getNewSeatTurn(thisGame, -1)
+    promises.push(update.playNumberCard(msg.game_id, msg.word))
     promises.push(update.updateGame(newSeatTurn, newDirection
                      , thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
  } else if ( msg.word === 'draw') {
@@ -140,7 +142,7 @@ function dealCard(msg, thisGame, thisGameCards, thisGamePlayers) {
 } // end of dealCard
 
 function getNewSeatTurn(thisGame, step) {
-  return (thisGame[0].seat_turn + step*thisGame[0].direction) % thisGame[0].seat_count
+  return Math.abs((thisGame[0].seat_turn + step*thisGame[0].direction) % thisGame[0].seat_count)
 }
 
 module.exports = playCards
