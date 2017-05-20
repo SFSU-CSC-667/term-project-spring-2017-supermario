@@ -23,9 +23,8 @@ const socketServer = (app, server) => {
       });
 
       socket.on('game', function(msg) {
-        console.log('server received: ', msg)
+console.log('server received ', JSON.stringify(msg))
         eventHandler(msg, function(toPlayer, toGroup) {
-//          console.log('socket to player: ', toPlayer, ' to group: ', toGroup)
           socket.emit('game', toPlayer);
           io.emit('game', toGroup);
         })

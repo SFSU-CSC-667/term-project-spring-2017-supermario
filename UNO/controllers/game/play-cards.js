@@ -29,24 +29,26 @@ const playCards = msg => {
     } else {
       console.log('not valid play')
     }
-    return promises
+    return Promise.all(promises)
   })
-  .then(value => {
-    Promise.all(value).then(values => {
-      console.log('promises return from dealCard(..) ', value)
-      console.log('update database finished')
-    })
-  })
+  // .then(value => {
+  //    console.log('returned promises from value',value)
+  //  Promise.all(value).then(values => {
+  //     console.log('promises return from dealCard(..) ', value)
+  //     console.log('update database finished')
+  //   })
+  // })
   .catch( Error => {
     console.log(Error)
   })
-
-  console.log('playCards is developing')
 } // end of playCards
 
 function validPlay(msg, thisGame, thisGamePlayers) {
-  var inTurn = colorMatch = numberMatch = validState = false
-console.log('server game state ', thisGame[0].game_state, ' client ', msg.game_state)
+  var inTurn = colorMatch = numberMatch = validState = anyCard = false
+
+  // check if the top discard is action card
+  if (cards[thisGame[0].top_discard].number_symbol > 9 ) anyCard = true
+console.log('topdiscard ',cards[thisGame[0].top_discard].number_symbol)
   // check if in valid state
   validState = (msg.game_state === thisGame[0].game_state) ? true : false
 
@@ -58,7 +60,6 @@ console.log('server game state ', thisGame[0].game_state, ' client ', msg.game_s
     }
   })
 
-console.log('top discard ', thisGame[0].top_discard, ' msg word ', msg.word )
   // check if wild cards
   if (msg.word > 99) return true
 
@@ -71,36 +72,64 @@ console.log('top discard ', thisGame[0].top_discard, ' msg word ', msg.word )
   if (cards[thisGame[0].top_discard].number_symbol === cards[msg.word].number_symbol)      
     numberMatch = true
 
-/* comment out following line for test
-  return inTurn && validState && (colorMatch || colorMatch)
-*/
-  return true // for test, pretend true
+    console.log('inturn: ',inTurn, ' valid state: ', validState, ' color: ',colorMatch, ' number: ',numberMatch, ' anyCard: ',anyCard)
+
+    console.log(' valid play? ', inTurn && validState && (colorMatch || numberMatch))
+
+  return anyCard || (validState && (colorMatch || numberMatch)) // test only
+
+//  return (anyCard && inTurn) || (inTurn && validState && (colorMatch || numberMatch))
 } // end of validState
 
 function dealCard(msg, thisGame, thisGameCards, thisGamePlayers) {
   var promises = []
   var thisCard = cards[msg.word].number_symbol
+  var newSeatTurn
 
-  // number card
-    console.log('this card should less than 10 :', thisCard)
-  if( thisCard < 10 ) {
-      promises.push(update.addPileOrder(msg.game_id, thisGame[0].next_order))                     
-      promises.push(update.playNumberCard(msg.game_id, msg.word))
-      // following not set seat_turn + 1 for testing thd same player
-      // game state not thisGame.game_state + 1
-      promises.push(update.updateGame(++thisGame[0].seat_turn, thisGame[0].direction
-                     , ++thisGame[0].next_order, msg.word, ++thisGame[0].game_state))
-  }                         
+   if ( thisCard === 10 ) {
+    // skip card
+    newSeatTurn = getNewSeatTurn(thisGame, 2)
+    promises.push(update.updateGame(newSeatTurn, thisGame[0].direction
+                     , thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
+  } else if ( thisCard === 11 ) {
+    // reverse card
+    var newDirection = -1 * thisGame[0].direction
+    newSeatTurn = getNewSeatTurn(thisGame, -1)
+    promises.push(update.updateGame(newSeatTurn, newDirection
+                     , thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
+ } else {  // if( thisCard < 10 ) {
+    // number card
+    promises.push(update.addPileOrder(msg.game_id, thisGame[0].next_order))                     
+    promises.push(update.playNumberCard(msg.game_id, msg.word))
+    // following not set seat_turn + 1 for testing thd same player
+    // game state not thisGame.game_state + 1
+    newSeatTurn = getNewSeatTurn(thisGame, 1)
+    promises.push(update.updateGame(newSeatTurn, thisGame[0].direction
+                     , ++thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
 
-  // action card
-  // wild card
-  // wild four card
-    
-  
+  }
+  /*
+   else if ( thisCard === 12 ) {
+    // draw 2 card
+    // let go temparary
 
-  // need to return a promise at the end
-//    return Promise.all(gamePromise)
+  } else if ( thisCard === 13 ) {
+    // wild card
+    // let go temparary
+
+
+  } else if ( thisCard === 14 ) {
+    // wild draw 4 card
+    // let go temparary
+
+  }
+  */ 
+
   return promises
 } // end of dealCard
+
+function getNewSeatTurn(thisGame, step) {
+  return (thisGame[0].seat_turn + step*thisGame[0].direction) % thisGame[0].seat_count
+}
 
 module.exports = playCards
