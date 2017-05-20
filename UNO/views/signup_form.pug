@@ -1,0 +1,16 @@
+extends layout
+ 
+block content
+    h1= title
+    form(name="signup", method="post")
+        div.input
+            span.label Email
+            input(type="text", name="email")
+        div.input
+            span.label Password
+            input(type="password", name="password")
+        div.input
+            span.label Nickname
+            input(type="text", name="nick_name")
+        div.actions
+            input(type="submit", value="Sign Up")

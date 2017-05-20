@@ -1,0 +1,33 @@
+extends layout
+
+block content
+  div.navbar.navbar-inverse
+    div.container-fluid
+      div.navbar-header  
+        a.navbar-brand(href='/') UNO
+      ul.nav.navbar-nav.navbar-left
+        li
+          a(href='/') Lobby
+        li
+          a(href='/game') Game
+        li
+          a(href ='#' role='button', data-toggle='modal', data-target='#Instructions') Instructions
+          
+          div.modal.fade(id='Instructions', role='dialog')
+            div.modal-dialog
+              div.modal-content
+                div.modal-body
+                  p Instructions go here
+                div.modal-footer
+                  button.btn.btn-default(type='button', data-dismiss='modal') Close
+              
+
+      ul.nav.navbar-nav.navbar-right
+        li
+          a(href='/login') Login/Sign Up
+
+  div.row
+    div.col-md-9
+      h2 Welcome to #{title}
+    div.col-md-3
+      h3 Chat widget goes here

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Game Lobby</title>
+	<link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.css">
+	<script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+	<script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+ 	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+    <script src="/js/lobby.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+	<script src="/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+	<style>
+    body {
+        background-color: #f7eef3;
+        }
+    </style>
+</head>
+<body>
+	<!--Navbar-->
+	<nav class = "navbar navbar-inverse">
+		<div class = "container-fluid">
+			<div class = "navbar-header">
+				<a class = "navbar-brand" href="/">UNO</a>
+			</div>
+			<ul class = "nav navbar-nav navbar-left">
+				<li class="active"><a href="/lobby">Lobby</a></li>
+				<li><a href="#" role="button" data-toggle="modal" data-target="#Instructions"> Instructions</a></li>
+			</ul>
+			<div id="Instructions" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-body">
+							<p>The aim of the game is to be the first player to score 500 points, achieved by a player discarding all of their cards and earning points corresponding to the value of the remaining cards still held by the other players. </p>
+							<p>The deck consists of 108 cards, of which there are 25 of each color (red, green, blue, and yellow), each color having two of each rank except zero. The ranks in each color are zero to nine, "Skip", "Draw Two", and "Reverse". In addition, the deck contains four each of "Wild" and "Wild Draw Four" cards. </p>
+							<p>To start a hand, seven cards are dealt to each player, and the top card of the deck is flipped over and set aside to begin the discard pile. The player to the dealer's left plays first, unless the first card on the discard pile is an action or Wild card. On a player's turn, he/she must do one of the following: </p>
+							<li>play a card matching the discard in color, number, or symbol</li>
+							<li>play a Wild card, or a playable Wild Draw Four card</li>
+							<li>draw the top card of the deck</li><br>
+							<p>Play proceeds clockwise around the table. </p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<ul class="nav navbar-nav navbar-right">
+			<!--If player logged in, show Welcome playername & logout, else show login or sign up options.-->
+				<li><a href="/logout">Logout</a></li>
+			</ul>
+		</div>
+	</nav>
+	<!--End of Navbar-->
+
+    <div id="variables" data-email={{email}} />
+	<!--<a href="/create_game" role="button" class="btn btn-success" onclick="create_game()">Create Game</a>-->
+	<!--<button class="btn btn-success" onclick="create_game()">Create Game</button>-->
+	<div class="row">
+		<div class="col-md-7 col-md-offset-1">
+			<h2>Game Lobby
+				<button class="btn btn-warning btn-lg pull-right" onclick="create_game('{{email}}')">Create Game</button>
+			</h2><br>
+		<!--Game Panel-->
+		<div id="gamelist">
+			{{#each games}}
+			<div id="game{{this.id}}" class="panel panel-default">
+				<div class="panel-heading">
+					<div class="row">
+						<div class="col-md-5">
+							<h4>Game {{this.id}}</h4>
+						</div>
+						<div class="col-md-4">
+							<h5># of players: {{this.players.length}}</h5>
+						</div>
+						<div class="col-md-3">
+							<button class="btn btn-danger pull-right" onclick="join_game('{{../email}}',{{this.id}})">Join Game</button>
+						</div>
+					</div>
+				</div>
+				<div class="panel-body">
+					<div class="row">
+						<div class="col-md-12">
+							<ul class="list-inline">
+							<!--Code for each player in game-->
+							{{#each this.players}}
+							<li>{{this}}</li>
+							{{/each}}
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			{{/each}}
+		</div>
+	</div>
+	<div class="col-md-4">
+		<div id="chat">
+		<!--Put Chat Widget here-->
+		<h3>Chat</h3>
+		<style>
+	      * { margin: 0; padding: 0; box-sizing: border-box; }
+	      body { font: 13px Helvetica, Arial; }
+	      form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 30%; }
+	      form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+	      form button { width: 9%; background: rgb(14, 209, 21); border: none; padding: 10px; }
+	      #messages { list-style-type: none; margin: 0; padding: 0; }
+	      #messages li { padding: 5px 10px; }
+	      #messages li:nth-child(odd) { background: #eee; }
+	      #messages { margin-bottom: 0px }
+	    </style>
+	    <ul id="messages">	
+		{{#each messages}}
+		<li>{{this.nick_name}}: {{this.message}}   {{this.post_time}}</li>
+		{{/each}}
+		</ul>
+	    <form action="">
+	      <input id="m" autocomplete="off" /><button>Send</button>
+	    </form>
+	    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+	    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+	    <script>
+	      $(function () {
+	        var socket = io();
+	        $('form').submit(function(){
+			  var msg={action:"send_chat", message: $('#m').val(), email: '{{email}}', game_id: 0}
+	          socket.emit('lobby server', msg);
+	          $('#m').val('');
+	          return false;
+	        });
+	      });
+	    </script>
+		</div>
+	</div>
+</div>
+</body>
+</html>

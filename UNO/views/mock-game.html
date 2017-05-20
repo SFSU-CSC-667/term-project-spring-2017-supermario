@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+<head>
+  <title>Game</title>
+
+  <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+  <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+ 	<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js"></script>
+  <script src="/js/mock-game.js"></script>
+  <link rel="stylesheet" href="/bootstrap-3.3.7-dist/css/bootstrap.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+  <script src="/bootstrap-3.3.7-dist/js/bootstrap.js"></script>
+  <link rel="stylesheet" type="text/css" href="/css/test-game.css">
+  <style>
+    body {
+        background-color: #f7eef3;
+        }
+    .h-divider{ 
+      margin-top:5px;
+      margin-bottom:5px;
+      height:1px;
+      width:100%;
+      border-top:3px solid gray;
+      }
+  </style>
+
+</head>
+<body>
+  <!--Navbar-->
+	<nav class = "navbar navbar-inverse">
+		<div class = "container-fluid">
+			<div class = "navbar-header">
+				<a class = "navbar-brand" href="/">UNO</a>
+			</div>
+			<ul class = "nav navbar-nav navbar-left">
+				<li><a href="/lobby">Lobby</a></li>
+				<li><a href="#" role="button" data-toggle="modal" data-target="#Instructions"> Instructions</a></li>
+			</ul>
+			<div id="Instructions" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-body">
+							<p>The aim of the game is to be the first player to score 500 points, achieved by a player discarding all of their cards and earning points corresponding to the value of the remaining cards still held by the other players. </p>
+							<p>The deck consists of 108 cards, of which there are 25 of each color (red, green, blue, and yellow), each color having two of each rank except zero. The ranks in each color are zero to nine, "Skip", "Draw Two", and "Reverse". In addition, the deck contains four each of "Wild" and "Wild Draw Four" cards. </p>
+							<p>To start a hand, seven cards are dealt to each player, and the top card of the deck is flipped over and set aside to begin the discard pile. The player to the dealer's left plays first, unless the first card on the discard pile is an action or Wild card. On a player's turn, he/she must do one of the following: </p>
+							<li>play a card matching the discard in color, number, or symbol</li>
+							<li>play a Wild card, or a playable Wild Draw Four card</li>
+							<li>draw the top card of the deck</li><br>
+							<p>Play proceeds clockwise around the table. </p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			<ul class="nav navbar-nav navbar-right">
+			<!--If player logged in, show Welcome playername & logout, else show login or sign up options.-->
+				<li><a href="/login">Login</a></li>
+				<li><a href="/logout">Logout</a></li>
+				<li><a href="/signup">Sign Up</a></li>
+			</ul>
+		</div>
+	</nav>
+	<!--End of Navbar-->
+
+  <!--Game area here-->
+  <div class="row">
+    <div class="col-md-8">
+      <div class="row">
+        <div class="col-md-10">
+          <h1>GAME {{game_id}}</h1><!--GAME ID HERE-->
+        </div>
+        <div class="col-md-2">
+          <a href="#" role="button" class="btn btn-success btn-lg btn-block">READY</a><!--ready function here, maybe can set to disappear after game starts?-->
+        </div>
+      </div>
+      <div class="row">      
+        <div class="col-md-2 col-md-offset-5">
+          <!--Player module-->
+          <div id="player">
+            <img src="/images/avatars/kid.png" alt="#" class="img-circle" width="100" height="100"> 
+            <h5>Player Name</h5><!--Insert player name here-->
+            <h6># of cards in hand</h6><!--Card count in hand-->
+          </div>
+          <!--end of player module-->
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-2">
+          <!--Player module-->
+          <div id="player">
+            <img src="/images/avatars/rabbit.png" alt="#" class="img-circle" width="100" height="100"> 
+            <h5>Player Name</h5><!--Insert player name here-->
+            <h6># of cards in hand</h6><!--Card count in hand-->
+          </div>
+          <!--end of player module-->
+        </div>
+        <div class="col-md-1">
+          <p>direction image here</p><!--game direction image, code to invert image following the game direction-->
+        </div>
+        <div class="col-md-6">
+          <h1>GAME TABLE HERE, DISCARD PILE</h1><!--Show top card of discard pile javascript here-->
+        </div>
+        <div class="col-md-1">
+          <p>direction image here</p><!--game direction image, code to invert image following the game direction-->
+        </div>
+        <div class="col-md-2">
+          <!--Player module-->
+          <div id="player">
+            <img src="/images/avatars/teenage.png" alt="#" class="img-circle" width="100" height="100"> 
+            <h5>Player Name</h5><!--Insert player name here-->
+            <h6># of cards in hand</h6><!--Card count in hand-->
+          </div>
+          <!--end of player module-->
+        </div>
+      </div>
+      <!--Current player dashboard-->
+      <div class="h-divider"></div>
+      <div class="row">
+        <div class="col-md-2">
+          <img src="/images/avatars/lion.png" alt="#" class="img-circle" width="150" height="150">
+          <h4>Player Name</h4><!--Insert player name here-->
+        </div>
+        <div id="player_hands" class="col-md-6">
+          <h2>CARDS ON HAND HERE</h2><!--javascript to display cards on hand here-->
+          {{#each hands}}
+		  <img src="/images/cards/{{this.image_url}}" alt="#" width="150" height="150" onclick="play_hand('{{this.id}}')">
+		  {{/each}}
+        </div>
+        <div class="col-md-2 col-md-offset-2">
+          <button class="btn btn-default btn-lg btn-block">PASS</button><!--Skip turn function here-->
+          <button class="btn btn-warning btn-lg btn-block" onclick="draw()">DRAW A CARD</button><!--draw a card function here-->
+          <button class="btn btn-danger btn-lg btn-block">UNO</button><!--Call UNO! function here-->
+        </div>
+      </div>
+      <!--End of current player dashboard-->  
+    </div>
+    <!--End of game area-->
+
+
+
+    <div class="col-md-4">
+		  <div id="chat"><!--Put Chat Widget here-->
+		    <h3>Chat</h3>
+		      <style>
+	            * { margin: 0; padding: 0; box-sizing: border-box; }
+	            body { font: 13px Helvetica, Arial; }
+	            form { background: #000; padding: 3px; position: fixed; bottom: 0; width: 30%; }
+	            form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+	            form button { width: 9%; background: rgb(14, 209, 21); border: none; padding: 10px; }
+	            #messages { list-style-type: none; margin: 0; padding: 0; }
+	            #messages li { padding: 5px 10px; }
+	            #messages li:nth-child(odd) { background: #eee; }
+	            #messages { margin-bottom: 0px }
+	        </style>
+	    	<ul id="messages">	
+			{{#each messages}}
+			<li>{{this.nick_name}}: {{this.message}}   {{this.post_time}}</li>
+			{{/each}}
+			</ul>
+	        <form action="">
+	          <input id="m" autocomplete="off" /><button>Send</button>
+	        </form>
+	        <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+	        <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+	        <script>
+	          $(function () {
+	            var socket = io();
+	            $('form').submit(function(){
+			 	 	var msg={action:"send_chat", message: $('#m').val(), email: '{{email}}', game_id: 0}
+	         	    socket.emit('mock game server', msg);
+	              	$('#m').val('');
+	              	return false;
+	            });
+	          });
+	        </script>
+		  </div>
+	  </div>
+  </div>
+
+    <!--
+    <h2>Test Game</h2>
+    <div id="gameRoom">
+      <div id="gameBorad">
+        Select game id<select id='selectGame'></select>​
+        Select user id<select id='selectUser'></select>​
+        <p id="tosend"></p>
+        <h3>Group info from server</h3>
+        <p id="groupChannel"></p>
+        <h3>Private user info from server</h3>
+        <p id="userChannel"></p>
+        <br>
+        <img id="draw" class="card" src='images/cards/back.png' onmouseup="post('draw')"
+             alt='card:back'>
+        <img id="card1" class="card" src='images/cards/back.png' ondragend="post(1)"
+             onclick="post(1)" alt='card:any card'>
+        select a card<select id='selectCard' onselect='showCard(cardId)'></select>
+        <br><p id="ready" onclick="post('ready')">Click READY</p> 
+        <p id="red" onclick="post('red')">Click RED</p>
+        <p id="green" onclick="post('green')">Click GREEN</p>
+        <p id="blue" onclick="post('blue')">Click BLUE</p>
+        <p id="yellow" onclick="post('yellow')">Click YELLOW</p>
+        <p id="uno" onclick="post('uno')">Click to Say UNO</p>
+        <p id="skip" onclick="post('skip')">Click to Skip</p> 
+        <p id="exit" onclick="post('exit')">Click to EXIT</p>
+      </div>
+    </div>
+    -->
+  </body>
+</html>
