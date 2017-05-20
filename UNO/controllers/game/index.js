@@ -38,6 +38,7 @@ const eventHandler = (msg, callback) => {
     toPlayer.handCards = values[0]
     toGroup.game = values[1]
     toGroup.players = values[2]
+	console.log(toGroup.players);
     toGroup.cardsInPlayers = values[3]
     packOutPackage(msg, toPlayer, toGroup)
     return delay(50)

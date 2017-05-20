@@ -99,7 +99,7 @@ function userHandler(msg) {
     case 'init':
       result = 'init'
       cards = msg.cardsTable;
-      drawPlayers(msg)
+      //drawPlayers(msg)
       break;
     case 'exit':
       result = 'exit';
@@ -132,6 +132,7 @@ function groupHandler(msg) {
   gameState = msg.game_state
   topDiscard(msg)
   drawArror(msg)
+  drawPlayers(msg)
   if (msg.refresh === 'refresh') {
     // send refresh request to server
     post('refresh')
@@ -191,6 +192,17 @@ function drawArror(msg) {
   }
 }
 
+
 function drawPlayers(msg) {
-  
+   var userSeat=0;
+   var playerNum=msg.players.length;
+   msg.players.forEach( pl => {
+        if(pl.id===userId){
+			userSeat=pl.seat_number;
+   			document.getElementById('opponent1_name').innerHTML=msg.players[(playerNum-userSeat+1)%playerNum].nick_name
+   			document.getElementById('opponent2_name').innerHTML=msg.players[(playerNum-userSeat+2)%playerNum].nick_name
+   			document.getElementById('opponent3_name').innerHTML=msg.players[(playerNum-userSeat+3)%playerNum].nick_name
+        } 
+   });
+   
 }
