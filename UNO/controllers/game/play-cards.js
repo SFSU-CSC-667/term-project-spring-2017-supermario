@@ -105,15 +105,17 @@ function dealCard(msg, thisGame, thisGameCards, thisGamePlayers) {
     promises.push(update.addPileOrder(msg.game_id, thisGame[0].next_order))                     
     promises.push(update.playNumberCard(msg.game_id, msg.word))
     var newDirection = -1 * thisGame[0].direction
-    newSeatTurn = getNewSeatTurn(thisGame, -1)
+    getNewSeatTurn(thisGame, -1).then( newSeatTurn => {
     promises.push(update.updateGame(newSeatTurn, newDirection
                      , thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
+    });
  } else if ( msg.word === 'draw') {
    // draw a card
-   newSeatTurn = getNewSeatTurn(thisGame, 1)
    promises.push(update.dealtGameCards(msg.user_id, msg.game_id, thisGame[0].next_order))
+   getNewSeatTurn(thisGame, 1).then( newSeatTurn => {
    promises.push(update.updateGame(newSeatTurn, thisGame[0].direction
                      , ++thisGame[0].next_order, thisGame[0].top_discard, ++thisGame[0].game_state, msg.game_id))
+    });
  
  } else {  // if( thisCard < 10 ) {
     // number card
@@ -121,10 +123,10 @@ function dealCard(msg, thisGame, thisGameCards, thisGamePlayers) {
     promises.push(update.playNumberCard(msg.game_id, msg.word))
     // following not set seat_turn + 1 for testing thd same player
     // game state not thisGame.game_state + 1
-    newSeatTurn = getNewSeatTurn(thisGame, 1)
+    getNewSeatTurn(thisGame, 1).then( newSeatTurn => {
     promises.push(update.updateGame(newSeatTurn, thisGame[0].direction
                      , ++thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
-
+    });
   }
   /*
    else if ( thisCard === 12 ) {
@@ -148,7 +150,7 @@ function dealCard(msg, thisGame, thisGameCards, thisGamePlayers) {
 
 function getNewSeatTurn(thisGame, step) {
   return new Promise( function(fulfill, reject){
- 	 fulfill( (thisGame[0].seat_turn + step*thisGame[0].direction) % thisGame[0].seat_count);
+ 	 fulfill( (thisGame[0].seat_turn + step*thisGame[0].direction + thisGame[0].seat_count) % thisGame[0].seat_count);
   });
 }
 
