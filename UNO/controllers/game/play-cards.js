@@ -49,7 +49,7 @@ function validPlay(msg, thisGame, thisGamePlayers) {
 
 
   // check if the top discard is action card
-  if (cards[thisGame[0].top_discard].number_symbol > 9 ) anyCard = true
+  //if (cards[thisGame[0].top_discard].number_symbol > 9 ) anyCard = true
 console.log('topdiscard ',cards[thisGame[0].top_discard].number_symbol)
   // check if in valid state
   validState = (msg.game_state === thisGame[0].game_state) ? true : false
@@ -61,6 +61,7 @@ console.log('topdiscard ',cards[thisGame[0].top_discard].number_symbol)
     if (msg.user_id === element.user_id &&
           element.seat_number === thisGame[0].seat_turn) {
       inTurn = true
+	  
     }
   })
   if (msg.word === 'draw') return inTurn;
@@ -111,13 +112,13 @@ function dealCard(msg, thisGame, thisGameCards, thisGamePlayers) {
     });
  } else if ( msg.word === 'draw') {
    // draw a card
-   promises.push(update.dealtGameCards(msg.user_id, msg.game_id, thisGame[0].next_order))
+   promises.push(update.dealtGameCards(msg.user_id, msg.game_id, ++thisGame[0].next_order))
    getNewSeatTurn(thisGame, 1).then( newSeatTurn => {
    promises.push(update.updateGame(newSeatTurn, thisGame[0].direction
-                     , ++thisGame[0].next_order, thisGame[0].top_discard, ++thisGame[0].game_state, msg.game_id))
+                     , thisGame[0].next_order, thisGame[0].top_discard, ++thisGame[0].game_state, msg.game_id))
     });
  
- } else {  // if( thisCard < 10 ) {
+ } else if( thisCard < 10 ) {
     // number card
     promises.push(update.addPileOrder(msg.game_id, thisGame[0].next_order))                     
     promises.push(update.playNumberCard(msg.game_id, msg.word))
@@ -125,15 +126,30 @@ function dealCard(msg, thisGame, thisGameCards, thisGamePlayers) {
     // game state not thisGame.game_state + 1
     getNewSeatTurn(thisGame, 1).then( newSeatTurn => {
     promises.push(update.updateGame(newSeatTurn, thisGame[0].direction
-                     , ++thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
+                     , thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
     });
   }
-  /*
+  
    else if ( thisCard === 12 ) {
     // draw 2 card
+    promises.push(update.addPileOrder(msg.game_id, thisGame[0].next_order))                     
+    promises.push(update.playNumberCard(msg.game_id, msg.word))
+    getNewSeatTurn(thisGame, 1).then( passedSeatTurn => {
+    	thisGamePlayers.forEach(element => {
+         	if ( element.seat_number === passedSeatTurn ) {
+   				promises.push(update.dealtGameCards(element.user_id, msg.game_id, ++thisGame[0].next_order))
+   				promises.push(update.dealtGameCards(element.user_id, msg.game_id, ++thisGame[0].next_order))
+    			getNewSeatTurn(thisGame, 1).then( newSeatTurn => {
+  					  promises.push(update.updateGame(newSeatTurn, thisGame[0].direction
+                     , thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
+    			});
+			
+		    }
+		});
+    });
     // let go temparary
 
-  } else if ( thisCard === 13 ) {
+  }/* else if ( thisCard === 13 ) {
     // wild card
     // let go temparary
 
