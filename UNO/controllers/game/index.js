@@ -71,16 +71,18 @@ function handleEvent(msg, toPlayer, toGroup) {
       result = 'get pass'
       break
     case 'ready':
-      result = ready(msg)  // if ready, then start game
+      ready(msg).then( result => {  // if ready, then start game
       if (result) {
+		result="start game";
         toGroup.refresh = 'refresh'
         start(msg)
       } else {
-        result = 'not ready to start'
+        result = 'not ready to start';
       }
-              toGroup.refresh = 'refresh'
-
-                      start(msg) // for test with out players are really ready
+      toGroup.refresh = 'refresh'
+	  });
+	  
+       //               start(msg) // for test with out players are really ready
       break
     case 'red':
     case 'green':
@@ -104,7 +106,7 @@ function handleEvent(msg, toPlayer, toGroup) {
     default:
       result = 'no matched word'
   }
-  console.log('result: ', result)
+  //console.log('result: ', result)
   return promise || new Promise((resolve) => {resolve()});
 }
 

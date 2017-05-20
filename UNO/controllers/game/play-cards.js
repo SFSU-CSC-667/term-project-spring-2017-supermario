@@ -47,7 +47,6 @@ const playCards = msg => {
 function validPlay(msg, thisGame, thisGamePlayers) {
   var inTurn = colorMatch = numberMatch = validState = anyCard = false
 
-  if (msg.word === 'draw') return true
 
   // check if the top discard is action card
   if (cards[thisGame[0].top_discard].number_symbol > 9 ) anyCard = true
@@ -56,15 +55,17 @@ console.log('topdiscard ',cards[thisGame[0].top_discard].number_symbol)
   validState = (msg.game_state === thisGame[0].game_state) ? true : false
 
   // check if in turn
+  var player=0;
   thisGamePlayers.forEach(element => {
+	player++;
     if (msg.user_id === element.user_id &&
           element.seat_number === thisGame[0].seat_turn) {
       inTurn = true
     }
   })
-
+  if (msg.word === 'draw') return inTurn;
   // check if wild cards
-  if (msg.word > 99) return true
+  if (msg.word > 99) return inTurn;
 
   // check color
   var cardColor
@@ -79,9 +80,9 @@ console.log('topdiscard ',cards[thisGame[0].top_discard].number_symbol)
 
     console.log(' valid play? ', inTurn && validState && (colorMatch || numberMatch))
 
-  return anyCard || (validState && (colorMatch || numberMatch)) // test only
+  //return anyCard || (validState && (colorMatch || numberMatch)) // test only
 
-//  return (anyCard && inTurn) || (inTurn && validState && (colorMatch || numberMatch))
+  return (anyCard && inTurn) || (inTurn && validState && (colorMatch || numberMatch))
 } // end of validState
 
 function dealCard(msg, thisGame, thisGameCards, thisGamePlayers) {
@@ -93,19 +94,25 @@ function dealCard(msg, thisGame, thisGameCards, thisGamePlayers) {
 
    if ( thisCard === 10 ) {
     // skip card
-    newSeatTurn = getNewSeatTurn(thisGame, 2)
+    promises.push(update.addPileOrder(msg.game_id, thisGame[0].next_order))                     
+    promises.push(update.playNumberCard(msg.game_id, msg.word))
+    getNewSeatTurn(thisGame, 2).then( newSeatTurn => {
     promises.push(update.updateGame(newSeatTurn, thisGame[0].direction
                      , thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
+    });
   } else if ( thisCard === 11 ) {
     // reverse card
+    promises.push(update.addPileOrder(msg.game_id, thisGame[0].next_order))                     
+    promises.push(update.playNumberCard(msg.game_id, msg.word))
     var newDirection = -1 * thisGame[0].direction
     newSeatTurn = getNewSeatTurn(thisGame, -1)
     promises.push(update.updateGame(newSeatTurn, newDirection
                      , thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
  } else if ( msg.word === 'draw') {
    // draw a card
+   newSeatTurn = getNewSeatTurn(thisGame, 1)
    promises.push(update.dealtGameCards(msg.user_id, msg.game_id, thisGame[0].next_order))
-   promises.push(update.updateGame(thisGame[0].seat_turn, thisGame[0].direction
+   promises.push(update.updateGame(newSeatTurn, thisGame[0].direction
                      , ++thisGame[0].next_order, thisGame[0].top_discard, ++thisGame[0].game_state, msg.game_id))
  
  } else {  // if( thisCard < 10 ) {
@@ -134,13 +141,15 @@ function dealCard(msg, thisGame, thisGameCards, thisGamePlayers) {
     // let go temparary
 
   }
-  */ 
+  */
 
   return promises
 } // end of dealCard
 
 function getNewSeatTurn(thisGame, step) {
-  return (thisGame[0].seat_turn + step*thisGame[0].direction) % thisGame[0].seat_count
+  return new Promise( function(fulfill, reject){
+ 	 fulfill( (thisGame[0].seat_turn + step*thisGame[0].direction) % thisGame[0].seat_count);
+  });
 }
 
 module.exports = playCards

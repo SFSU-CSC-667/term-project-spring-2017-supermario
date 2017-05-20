@@ -77,7 +77,7 @@
       <div class="row">      
         <div class="col-md-2 col-md-offset-5">
           <!--Player module-->
-          <div id="player">
+          <div id="opponent1">
             <img src="/images/avatars/kid.png" alt="#" class="img-circle" width="100" height="100"> 
             <h5>Player Name</h5><!--Insert player name here-->
             <h6># of cards in hand</h6><!--Card count in hand-->
@@ -88,7 +88,7 @@
       <div class="row">
         <div class="col-md-2">
           <!--Player module-->
-          <div id="player">
+          <div id="opponent2">
             <img src="/images/avatars/rabbit.png" alt="#" class="img-circle" width="100" height="100"> 
             <h5>Player Name</h5><!--Insert player name here-->
             <h6># of cards in hand</h6><!--Card count in hand-->
@@ -109,7 +109,7 @@
         </div>
         <div class="col-md-2">
           <!--Player module-->
-          <div id="player">
+          <div id="opponent3">
             <img src="/images/avatars/teenage.png" alt="#" class="img-circle" width="100" height="100"> 
             <h5>Player Name</h5><!--Insert player name here-->
             <h6># of cards in hand</h6><!--Card count in hand-->
@@ -120,7 +120,7 @@
       <!--Current player dashboard-->
       <div class="h-divider"></div>
       <div class="row">
-        <div class="col-md-2">
+        <div id="player" class="col-md-2">
           <img src="/images/avatars/lion.png" alt="#" class="img-circle" width="150" height="150">
           <h4>{{nick_name}}</h4><!--Insert player name here-->
         </div>
@@ -132,8 +132,7 @@
 		  {{/each}}
         </div>
         <div class="col-md-2 col-md-offset-2">
-          <button class="btn btn-default btn-lg btn-block" onclick="post('pass')">PASS</button><!--Skip turn function here-->
-          <button class="btn btn-warning btn-lg btn-block" onclick="post('draw')">DRAW A CARD</button><!--draw a card function here-->
+          <button class="btn btn-warning btn-lg btn-block" onclick="post('draw')">DRAW</button><!--draw a card function here-->
           <button class="btn btn-danger btn-lg btn-block" onclick="post('uno')">UNO</button><!--Call UNO! function here-->
         </div>
       </div>
