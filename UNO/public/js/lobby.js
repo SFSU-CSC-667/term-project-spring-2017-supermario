@@ -9,6 +9,7 @@ $(function () {
 	
 	switch(msg.action) {
 		case "update_games":
+  			msg.email = $("#variables").data('email');	
 			html = gamelist_template(msg);
 			document.getElementById("gamelist").innerHTML = html;
 			break;
@@ -50,7 +51,7 @@ var gamelist =	`{{#each games}}
 							<h5># of players: {{this.players.length}}</h5>
 						</div>
 						<div class="col-md-3">
-							<a href="#" role="button" class="btn btn-danger pull-right", onclick="join_game('{{../email}}','{{this.id}}')">Join Game</a>
+							<button class="btn btn-danger pull-right" onclick="join_game('{{../email}}',{{this.id}})">Join Game</button>
 						</div>
 					</div>
 				</div>

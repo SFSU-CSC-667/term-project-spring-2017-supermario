@@ -134,6 +134,9 @@ function sendOut(outPackage) {
 
 
 function init() {
+  gameId = $("#variables").data('game_id');
+  userId = $("#variables").data('user_id');
+  toServer = { word: {}, game_id: gameId, user_id: userId, game_state: gameState };
   post('init')
 }
 
@@ -144,7 +147,7 @@ function showHandCards(handCards) {
   
   cardsInhand.forEach(element => {
     cardId = element.card_id
-    oneCard = 'images/cards/' + cards[cardId].image_url
+    oneCard = '/images/cards/' + cards[cardId].image_url
     image += `<img class="card" src="${oneCard}" ondragend="post(${cardId})"
                 onclick="post(${cardId})" alt='card_id: ${cardId}'> `
     x += 15
@@ -153,7 +156,7 @@ function showHandCards(handCards) {
 }
 
 function topDiscard(msg) {
-  var discard = 'images/cards/' + cards[msg.game[0].top_discard].image_url
+  var discard = '/images/cards/' + cards[msg.game[0].top_discard].image_url
  // var image = `<img id="discardPile" src="${discard}" alt="top_discard">`
   document.getElementById('discard').src = discard
 }

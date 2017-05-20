@@ -10,9 +10,10 @@
     <div class="row">
         <div class="col-md-4 col-md-offset-4 text-center">
             <h1>Login to UNO</h1>
+			<h2>{{message}}</h2>
             <img src="/images/splash/UNOBG.png" class="img-responsive" alt="UNO Splash Image">
 
-            <form name="login", method="post">
+            <form action="/login" name="login", method="post">
                 <div class="form-group">
                     <label for="email">Email address:</label>
                     <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
