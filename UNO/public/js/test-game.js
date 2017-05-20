@@ -188,11 +188,13 @@ function topDiscard(msg) {
 
 function drawArror(msg) {
   if (msg.game[0].direction === 1) {
+
     document.getElementById('dir_left').innerHTML = `<img id="left-arrow" src="/images/splash/leftup.png">`
     document.getElementById('dir_right').innerHTML = `<img id="left-arrow" src="/images/splash/rightdown.png">` 
   } else if (msg.game[0].direction === -1) {
     document.getElementById('dir_left').innerHTML = `<img id="left-arrow" src="/images/splash/leftdown.png">`
     document.getElementById('dir_right').innerHTML = `<img id="left-arrow" src="/images/splash/rightup.png">` 
+
   }
 }
 

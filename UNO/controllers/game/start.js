@@ -7,7 +7,7 @@ const DEALT_CARDS = 7
 const start = (msg) => {
   var numOfCards, array, game_players, game_cards, topOrder
 
-  access.cards().then(result => {
+  return access.cards().then(result => {
     numOfCards = result.length
   })
   .then( () => {

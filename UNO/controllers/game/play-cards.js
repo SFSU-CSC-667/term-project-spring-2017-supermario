@@ -95,9 +95,11 @@ function dealCard(msg, thisGame, thisGameCards, thisGamePlayers) {
 
    if ( thisCard === 10 ) {
     // skip card
+
     promises.push(update.addPileOrder(msg.game_id, thisGame[0].next_order))                     
     promises.push(update.playNumberCard(msg.game_id, msg.word))
     getNewSeatTurn(thisGame, 2).then( newSeatTurn => {
+
     promises.push(update.updateGame(newSeatTurn, thisGame[0].direction
                      , thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
     });
@@ -106,7 +108,9 @@ function dealCard(msg, thisGame, thisGameCards, thisGamePlayers) {
     promises.push(update.addPileOrder(msg.game_id, thisGame[0].next_order))                     
     promises.push(update.playNumberCard(msg.game_id, msg.word))
     var newDirection = -1 * thisGame[0].direction
+
     getNewSeatTurn(thisGame, -1).then( newSeatTurn => {
+
     promises.push(update.updateGame(newSeatTurn, newDirection
                      , thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
     });
@@ -191,9 +195,11 @@ function dealCard(msg, thisGame, thisGameCards, thisGamePlayers) {
 } // end of dealCard
 
 function getNewSeatTurn(thisGame, step) {
+
   return new Promise( function(fulfill, reject){
  	 fulfill( (thisGame[0].seat_turn + step*thisGame[0].direction + thisGame[0].seat_count) % thisGame[0].seat_count);
   });
+
 }
 
 module.exports = playCards
