@@ -58,7 +58,7 @@ router.get('/signup', function(req, res, next) {
 });
 
 router.get('/signup_success', function(req, res, next) {
-	res.render('signup_success');
+	res.render('login_form',{message:"Successfully Signed Up!"});
 });
 
 router.post(
