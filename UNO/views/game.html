@@ -171,7 +171,7 @@
 	            var socket = io();
 	            $('form').submit(function(){
 			 	 	var msg={action:"send_chat", message: $('#msg_form').val(), email: '{{email}}', game_id: {{game_id}} }
-	         	    socket.emit('mock game server', msg);
+	         	    socket.emit('game chat', msg);
 	              	$('#msg_form').val('');
 	              	return false;
 	            });

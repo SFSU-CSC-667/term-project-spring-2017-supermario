@@ -27,12 +27,18 @@ socket.on('game', function(msg) {
 /* Check timeout */
 /* Event response */
 // *
+var chat=`{{#each messages}}
+		<li>{{this.nick_name}}: {{this.message}}   {{this.post_time}}</li>
+		{{/each}}`;
+
+var chat_template=Handlebars.compile(chat);
 
 $(function () {
   init()
   document.getElementById("gameNumber").innerHTML = gameId
 
   /* chat room needed to be solved chat channel */
+ /*
   $('form').submit(function(){
     socket.emit('chat message', $('#m').val());
     $('#m').val('');
@@ -43,7 +49,7 @@ $(function () {
     $('#messages').append($('<li>').text(msg));
     window.scrollTo(0, document.body.scrollHeight)
   });
-  
+  */
   socket.on('game', function(msg) {
     if (msg.hasOwnProperty("user_id") && msg.user_id === userId) {
       userHandler(msg)
@@ -98,6 +104,12 @@ function userHandler(msg) {
     case 'exit':
       result = 'exit';
       break;
+	case 'update_chat':
+		result='update chat';
+		html = chat_template(msg);
+		document.getElementById('messages').innerHTML = html;
+	    window.scrollTo(0, document.body.scrollHeight);
+		break;
     default:
       result = 'no matched order';
   }
@@ -109,6 +121,11 @@ function userHandler(msg) {
 }
 
 function groupHandler(msg) {
+  if (msg.order === 'update_chat') {
+		html = chat_template(msg);
+		document.getElementById('messages').innerHTML = html;
+	    window.scrollTo(0, document.body.scrollHeight);
+  }else{
   gameState = msg.game_state
   topDiscard(msg)
   drawArror(msg)
@@ -116,7 +133,7 @@ function groupHandler(msg) {
     // send refresh request to server
     post('refresh')
   }
-
+  }
 //  document.getElementById('groupChannel').innerHTML = JSON.stringify(msg);
 }
 

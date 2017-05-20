@@ -127,6 +127,9 @@ const wordMapOrder = word => {
     case 'exit':
       result = 'exit'
       break
+    case 'send_chat':
+      result = 'uppate_chat'
+      break
     default:
       result = 'none'
   }
