@@ -177,7 +177,11 @@ function showHandCards(handCards) {
 }
 
 function topDiscard(msg) {
-  var discard = '/images/cards/' + cards[msg.game[0].top_discard].image_url
+  if(cards[msg.game[0].top_discard]) {
+    var discard = '/images/cards/' + cards[msg.game[0].top_discard].image_url 
+  }else{
+    var discard = '/images/cards/back.png';
+  }
  // var image = `<img id="discardPile" src="${discard}" alt="top_discard">`
   document.getElementById('discard').src = discard
 }
@@ -199,9 +203,9 @@ function drawPlayers(msg) {
    msg.players.forEach( pl => {
         if(pl.id===userId){
 			userSeat=pl.seat_number;
-   			document.getElementById('opponent1_name').innerHTML=msg.players[(playerNum-userSeat+1)%playerNum].nick_name
-   			document.getElementById('opponent2_name').innerHTML=msg.players[(playerNum-userSeat+2)%playerNum].nick_name
-   			document.getElementById('opponent3_name').innerHTML=msg.players[(playerNum-userSeat+3)%playerNum].nick_name
+   			document.getElementById('opponent1_name').innerHTML=msg.players[(userSeat+1)%playerNum].nick_name
+   			document.getElementById('opponent2_name').innerHTML=msg.players[(userSeat+2)%playerNum].nick_name
+   			document.getElementById('opponent3_name').innerHTML=msg.players[(userSeat+3)%playerNum].nick_name
         } 
    });
    
