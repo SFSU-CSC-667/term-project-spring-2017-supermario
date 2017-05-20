@@ -2,7 +2,6 @@ const access = require('../../models/game/access.js')
 const ready = require('./ready')
 const start = require('./start')
 const initClient = require('./init-client')
-const draw = require('./draw')
 const pass = require('./pass')
 const pickedColor = require('./picked-color')
 const uno = require('./uno')
@@ -55,13 +54,12 @@ function handleEvent(msg, toPlayer, toGroup) {
   const word = msg.word
   var promise;
   console.log(word)
-  if (typeof word === 'number') {
+  if (typeof word === 'number' || word === 'draw') {
     promise = playCards(msg)
     result = 'get number'
   }
   switch (word) {
     case 'draw':
-      draw(msg)
       result = 'get draw'
       break
     case 'refresh':

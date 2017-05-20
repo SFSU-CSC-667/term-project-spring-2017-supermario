@@ -47,6 +47,8 @@ const playCards = msg => {
 function validPlay(msg, thisGame, thisGamePlayers) {
   var inTurn = colorMatch = numberMatch = validState = anyCard = false
 
+  if (msg.word === 'draw') return true
+
   // check if the top discard is action card
   if (cards[thisGame[0].top_discard].number_symbol > 9 ) anyCard = true
 console.log('topdiscard ',cards[thisGame[0].top_discard].number_symbol)
@@ -84,8 +86,10 @@ console.log('topdiscard ',cards[thisGame[0].top_discard].number_symbol)
 
 function dealCard(msg, thisGame, thisGameCards, thisGamePlayers) {
   var promises = []
-  var thisCard = cards[msg.word].number_symbol
+  var thisCard //= (typeof msg.word === 'number') ? cards[msg.word].number_symbol : msg.word
   var newSeatTurn
+
+  thisCard = (typeof msg.word === 'number') ? cards[msg.word].number_symbol : msg.word
 
    if ( thisCard === 10 ) {
     // skip card
@@ -98,6 +102,12 @@ function dealCard(msg, thisGame, thisGameCards, thisGamePlayers) {
     newSeatTurn = getNewSeatTurn(thisGame, -1)
     promises.push(update.updateGame(newSeatTurn, newDirection
                      , thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
+ } else if ( msg.word === 'draw') {
+   // draw a card
+   promises.push(update.dealtGameCards(msg.user_id, msg.game_id, thisGame[0].next_order))
+   promises.push(update.updateGame(thisGame[0].seat_turn, thisGame[0].direction
+                     , ++thisGame[0].next_order, thisGame[0].top_discard, ++thisGame[0].game_state, msg.game_id))
+ 
  } else {  // if( thisCard < 10 ) {
     // number card
     promises.push(update.addPileOrder(msg.game_id, thisGame[0].next_order))                     

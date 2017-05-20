@@ -111,6 +111,7 @@ function userHandler(msg) {
 function groupHandler(msg) {
   gameState = msg.game_state
   topDiscard(msg)
+  drawArror(msg)
   if (msg.refresh === 'refresh') {
     // send refresh request to server
     post('refresh')
@@ -155,6 +156,16 @@ function topDiscard(msg) {
   var discard = 'images/cards/' + cards[msg.game[0].top_discard].image_url
  // var image = `<img id="discardPile" src="${discard}" alt="top_discard">`
   document.getElementById('discard').src = discard
+}
+
+function drawArror(msg) {
+  if (msg.game[0].direction === 1) {
+    document.getElementById('dir_left').innerHTML = `<img id="left-arrow" src="images/splash/leftup.png">`
+    document.getElementById('dir_right').innerHTML = `<img id="left-arrow" src="images/splash/rightdown.png">` 
+  } else if (msg.game[0].direction === -1) {
+    document.getElementById('dir_left').innerHTML = `<img id="left-arrow" src="images/splash/leftdown.png">`
+    document.getElementById('dir_right').innerHTML = `<img id="left-arrow" src="images/splash/rightup.png">` 
+  }
 }
 
 function drawPlayers(msg) {
