@@ -9,7 +9,8 @@ const Avatars = require('../models/avatars')
 const Games = require('../models/games')
 const Messages = require('../models/messages')
 const Players = require('../models/players')
-const saltRounds = 10;
+CryptoJS=require('crypto-js');
+var SHA256 = require("crypto-js/sha256");
 
 
 router.get('/', function(req, res, next) { // This function is called when receive request " GET / "
@@ -26,8 +27,10 @@ router.post('/signup', (req, res, next) => {
     Users.emailNotUsed(req.body.email).then( one => {
     	//bcrypt.hash(req.body.password, saltRounds).then( (hash) => {
 			user=req.body;
+			hash=SHA256(user.password)
+			//user.encrypted_password=hash.toString(CryptoJS.enc.Base64)
 			user.encrypted_password=user.password
-			//user.encrypted_password=hash;
+	  		console.log(user.encrypted_password)
     		Users.createFromSignUp(user)
     		.then(() => {
   				console.log(user);	
