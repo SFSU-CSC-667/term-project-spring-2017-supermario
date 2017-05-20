@@ -34,7 +34,7 @@ router.post('/signup', (req, res, next) => {
     		Users.createFromSignUp(user)
     		.then(() => {
   				console.log(user);	
-				res.redirect('login');
+				res.redirect('signup_success');
     		})
     		.catch(error => {
         		// error;
@@ -57,6 +57,9 @@ router.get('/signup', function(req, res, next) {
 	})
 });
 
+router.get('/signup_success', function(req, res, next) {
+	res.render('signup_success');
+});
 
 router.post(
   '/login',
