@@ -163,7 +163,7 @@ function setRefreshFlag(word) {
 
 function packOutPackage(msg, toPlayer, toGroup) {
   
-  if (toPlayer.handCards.length===0){
+  if (toPlayer.handCards.length===0 && toGroup.cardsInPlayers.length>0){
   	toGroup.winner=msg.user_id;
   }
   toPlayer.user_id = msg.user_id
