@@ -91,7 +91,7 @@ router.get('/lobby', function(req, res, next) { // This function is called when 
 			res.render('lobby', { auth_stat: 'Authenticated', email: req.user.email, games: games, user: req.user});
 		});
 	} else {
-	res.render('lobby', { auth_stat: 'Unauthenticated'});
+		res.redirect('login');
 	}
 
 });
