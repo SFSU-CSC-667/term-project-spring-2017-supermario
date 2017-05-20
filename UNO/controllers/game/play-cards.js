@@ -49,7 +49,7 @@ function validPlay(msg, thisGame, thisGamePlayers) {
 
 
   // check if the top discard is action card
-  //if (cards[thisGame[0].top_discard].number_symbol > 9 ) anyCard = true
+  if (cards[thisGame[0].top_discard].number_symbol > 12 ) anyCard = true
 console.log('topdiscard ',cards[thisGame[0].top_discard].number_symbol)
   // check if in valid state
   validState = (msg.game_state === thisGame[0].game_state) ? true : false
@@ -149,17 +149,43 @@ function dealCard(msg, thisGame, thisGameCards, thisGamePlayers) {
     });
     // let go temparary
 
-  }/* else if ( thisCard === 13 ) {
+  } else if ( thisCard === 13 ) {
     // wild card
+    promises.push(update.addPileOrder(msg.game_id, thisGame[0].next_order))                     
+    promises.push(update.playNumberCard(msg.game_id, msg.word))
+    // following not set seat_turn + 1 for testing thd same player
+    // game state not thisGame.game_state + 1
+    getNewSeatTurn(thisGame, 1).then( newSeatTurn => {
+    promises.push(update.updateGame(newSeatTurn, thisGame[0].direction
+                     , thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
     // let go temparary
-
+	});
 
   } else if ( thisCard === 14 ) {
     // wild draw 4 card
+    promises.push(update.addPileOrder(msg.game_id, thisGame[0].next_order))                     
+    promises.push(update.playNumberCard(msg.game_id, msg.word))
+    // following not set seat_turn + 1 for testing thd same player
+    // game state not thisGame.game_state + 1
+    getNewSeatTurn(thisGame, 1).then( passedSeatTurn => {
+    	thisGamePlayers.forEach(element => {
+         	if ( element.seat_number === passedSeatTurn ) {
+   				promises.push(update.dealtGameCards(element.user_id, msg.game_id, ++thisGame[0].next_order))
+   				promises.push(update.dealtGameCards(element.user_id, msg.game_id, ++thisGame[0].next_order))
+   				promises.push(update.dealtGameCards(element.user_id, msg.game_id, ++thisGame[0].next_order))
+   				promises.push(update.dealtGameCards(element.user_id, msg.game_id, ++thisGame[0].next_order))
+    			getNewSeatTurn(thisGame, 1).then( newSeatTurn => {
+  					  promises.push(update.updateGame(newSeatTurn, thisGame[0].direction
+                     , thisGame[0].next_order, msg.word, ++thisGame[0].game_state, msg.game_id))
+    			});
+			
+		    }
+        });
+    });
     // let go temparary
 
   }
-  */
+  
 
   return promises
 } // end of dealCard
