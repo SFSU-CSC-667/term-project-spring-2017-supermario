@@ -203,6 +203,11 @@ function drawPlayers(msg) {
    msg.players.forEach( pl => {
         if(pl.id===userId){
 			userSeat=pl.seat_number;
+            if(msg.game[0].seat_turn===userSeat)
+				document.getElementById('player_hint').innerHTML="Your Turn."
+            else
+				document.getElementById('player_hint').innerHTML="Wait for other players."
+			
    			document.getElementById('opponent1_name').innerHTML=msg.players[(userSeat+1)%playerNum].nick_name
    			document.getElementById('opponent2_name').innerHTML=msg.players[(userSeat+2)%playerNum].nick_name
    			document.getElementById('opponent3_name').innerHTML=msg.players[(userSeat+3)%playerNum].nick_name

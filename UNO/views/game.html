@@ -127,7 +127,7 @@
         </div>
         <div id="handCards"></div><!-- Can move to anywhere, just keep the id -->
         <div id="player_hands" class="col-md-6">
-          <h2>CARDS ON HAND HERE</h2><!--javascript to display cards on hand here-->
+          <h2 id="player_hint">CARDS ON HAND HERE</h2><!--javascript to display cards on hand here-->
           {{#each hands}}
 		  <img src="/images/cards/{{this.image_url}}" alt="#" width="50" height="75" onclick="play('{{this.id}}')">
 		  {{/each}}
